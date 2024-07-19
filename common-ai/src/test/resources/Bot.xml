@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--EXPORTED BY TOOL, DON'T MODIFY IT!-->
+<!--Source File: TestBT.xml-->
+<behavior name="TestBT" agenttype="TestAgent" version="5">
+    <node class="Sequence" id="0">
+        <node class="ConditionNode" id="1">
+            <property Operator="And"/>
+            <property Opl="Self.FightAgent::testBoolean(true)"/>
+            <property Opr="const Boolean true"/>
+            <attachment class="Event" id="2" flag="event">
+                <property ReferenceFilename="smart/activity_pet/Task_OnBorn" />
+                <property Task="Self.SmartAgent::onBorn()" />
+                <property TaskId="1" />
+                <property TriggeredOnce="false" />
+                <property TriggerMode="Transfer" />
+            </attachment>
+        </node>
+
+    </node>
+</behavior>

@@ -1,0 +1,55 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.t13max</groupId>
+    <artifactId>t13max-common</artifactId>
+    <version>1.0.1</version>
+    <packaging>pom</packaging>
+
+    <name>t13max-common</name>
+    <url>http://maven.apache.org</url>
+    <modules>
+        <module>common-ai</module>
+        <module>common-util</module>
+        <module>common-core</module>
+    </modules>
+
+    <properties>
+        <java.version>17</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <util.version>1.0.1</util.version>
+
+        <junit.version>4.13.2</junit.version>
+        <log4j.version>2.17.2</log4j.version>
+        <lombok.version>1.18.30</lombok.version>
+        <groovy.version>3.0.9</groovy.version>
+        <dom4j.version>2.1.4</dom4j.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+        </dependency>
+    </dependencies>
+</project>
