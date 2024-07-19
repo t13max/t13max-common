@@ -24,7 +24,7 @@ public abstract class ManagerBase implements Comparable<ManagerBase> {
 
     //缓存所有manager
     public static volatile Map<String, ManagerBase> instances = new ConcurrentHashMap<>();
-    
+
     // manager依赖图
     private static final DAG<ManagerBase> dag = new DAG<>();
 
@@ -50,11 +50,47 @@ public abstract class ManagerBase implements Comparable<ManagerBase> {
         return (T) inst;
     }
 
-    public static void initialize() {
+    /**
+     * 自动扫描com.t13max包下的manager并初始化
+     *
+     * @Author: t13max
+     * @Since: 22:34 2024/7/19
+     */
+    private static void initialize() {
         instances.clear();
+
+        Set<Class<?>> classSet = PackageUtil.scan("com.t13max");
+
+        //创建实例
+        initialize(classSet);
+    }
+
+    /**
+     * 指定类加载器 初始化manager
+     *
+     * @Author: t13max
+     * @Since: 22:38 2024/7/19
+     */
+    public static void initialize(ClassLoader classLoader) {
+        instances.clear();
+
+        Set<Class<?>> classSet = PackageUtil.scan("com.t13max", classLoader);
+
+        //创建实例
+        initialize(classSet);
+    }
+
+    /**
+     * 初始化指定类的manager
+     * 不是manager自动跳过
+     *
+     * @Author: t13max
+     * @Since: 22:35 2024/7/19
+     */
+    private static void initialize(Set<Class<?>> classSet) {
+
         try {
-            Set<Class<?>> classSet = PackageUtil.scan("com.t13max");
-            //创建实例
+
             for (Class<?> clazz : classSet) {
                 // 只需要加载ManagerClass注解数据
                 if (!ManagerBase.class.isAssignableFrom(clazz) || Modifier.isAbstract(clazz.getModifiers())) {
@@ -76,7 +112,6 @@ public abstract class ManagerBase implements Comparable<ManagerBase> {
                     }
                 }
             }
-
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
                  InvocationTargetException e) {
             throw new CommonException(e);
@@ -87,7 +122,7 @@ public abstract class ManagerBase implements Comparable<ManagerBase> {
      * 初始化所有的manager
      */
     public static void initAllManagers() {
-        
+
         dag.walk(n -> {
             ManagerBase managerBase = n.getObj();
             try {
@@ -95,7 +130,7 @@ public abstract class ManagerBase implements Comparable<ManagerBase> {
                 managerBase.init();
                 Log.manager.debug("模块{}初始化完成.", managerBase.getClass().getName());
             } catch (final Exception ex) {
-                 Log.manager.error(String.format("模块%s启动失败", managerBase.getClass().getName()), ex);
+                Log.manager.error(String.format("模块%s启动失败", managerBase.getClass().getName()), ex);
                 throw new CommonException(ex);
             }
         });
@@ -110,7 +145,7 @@ public abstract class ManagerBase implements Comparable<ManagerBase> {
             try {
                 manager.onShutdown();
             } catch (Exception e) {
-                 Log.manager.info("Manager: {} shutdown failed, error: {}", manager.getClass().getCanonicalName(), e);
+                Log.manager.info("Manager: {} shutdown failed, error: {}", manager.getClass().getCanonicalName(), e);
             }
         });
     }

@@ -19,12 +19,16 @@ public class TextUtil {
         return readIgnore(fileName, null);
     }
 
-    public String readSql(String fileName) {
-        return readIgnore(fileName, "--");
+    public String readSql(String fileName, ClassLoader classLoader) {
+        return readIgnore(fileName, "--", classLoader);
     }
 
-    public String readIgnore(String fileName, String ignore) {
-        InputStream resourceAsStream = TextUtil.class.getClassLoader().getResourceAsStream(fileName);
+    public String readSql(String fileName) {
+        return readIgnore(fileName, "--", Thread.currentThread().getContextClassLoader());
+    }
+
+    public String readIgnore(String fileName, String ignore, ClassLoader classLoader) {
+        InputStream resourceAsStream = classLoader.getResourceAsStream(fileName);
         if (resourceAsStream == null) {
             throw new RuntimeException("资源找不到");
         }
@@ -46,5 +50,9 @@ public class TextUtil {
             throw new RuntimeException(e);
         }
         return stringBuilder.toString();
+    }
+
+    public String readIgnore(String fileName, String ignore) {
+        return readIgnore(fileName, ignore, Thread.currentThread().getContextClassLoader());
     }
 }

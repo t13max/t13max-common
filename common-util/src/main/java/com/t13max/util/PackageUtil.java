@@ -21,19 +21,19 @@ import java.util.jar.JarFile;
 public class PackageUtil {
 
     /**
-     * 扫描类
+     * 扫描类 使用指定类加载器
      *
      * @Author t13max
      * @Date 14:18 2024/5/23
      */
-    public static Set<Class<?>> scan(String pack) {
+    public static Set<Class<?>> scan(String pack, ClassLoader classLoader) {
         Set<Class<?>> classes = new LinkedHashSet<>();
         boolean recursive = true;
         String packageName = pack;
         String packageDirName = packageName.replace('.', '/');
         Enumeration<URL> dirs;
         try {
-            dirs = PackageUtil.class.getClassLoader().getResources(packageDirName);
+            dirs = classLoader.getResources(packageDirName);
             while (dirs.hasMoreElements()) {
                 URL url = dirs.nextElement();
                 String protocol = url.getProtocol();
@@ -63,7 +63,7 @@ public class PackageUtil {
                                             if (name.endsWith(".class") && !entry.isDirectory()) {
                                                 String className = name.substring(packageName.length() + 1, name.length() - 6);
                                                 try {
-                                                    classes.add(Class.forName(packageName + '.' + className));
+                                                    classes.add(Class.forName(packageName + '.' + className,true,classLoader));
                                                 } catch (ClassNotFoundException e) {
                                                     e.printStackTrace();
                                                 }
@@ -82,6 +82,16 @@ public class PackageUtil {
             e.printStackTrace();
         }
         return classes;
+    }
+
+    /**
+     * 扫描类 默认使用Thread.currentThread().getContextClassLoader()类加载器
+     *
+     * @Author: t13max
+     * @Since: 22:29 2024/7/19
+     */
+    public static Set<Class<?>> scan(String pack) {
+        return scan(pack, Thread.currentThread().getContextClassLoader());
     }
 
     /**

@@ -7,11 +7,11 @@
         <version>1.0.1</version>
     </parent>
 
-    <artifactId>common-core</artifactId>
+    <artifactId>t13max-core</artifactId>
     <packaging>jar</packaging>
 
-    <name>common-core</name>
-    <url>http://maven.apache.org</url>
+    <name>t13max-core</name>
+    <url>https://gitee.com/t13max</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -20,7 +20,7 @@
     <dependencies>
         <dependency>
             <groupId>com.t13max</groupId>
-            <artifactId>common-util</artifactId>
+            <artifactId>t13max-util</artifactId>
             <version>${util.version}</version>
         </dependency>
     </dependencies>
