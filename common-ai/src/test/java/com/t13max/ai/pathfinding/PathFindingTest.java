@@ -1,7 +1,5 @@
 package com.t13max.ai.pathfinding;
 
-import com.t13max.ai.pathfinding.astar.AStarPathFinding;
-import com.t13max.ai.pathfinding.grid.IGrid;
 import com.t13max.ai.pathfinding.jps.JumpPointSearch;
 import org.junit.Test;
 
@@ -17,9 +15,9 @@ public class PathFindingTest {
     public void pathFind() {
         TestGrid testGrid = new TestGrid("grid.txt");
 
-        IPathFind iPathFind = create(testGrid);
+        IPathFinding iPathFinding = createPathFinding();
 
-        List<Node> path = iPathFind.findPath(new Node(1, 1), new Node(98, 98));
+        List<Node> path = iPathFinding.findPath(testGrid, new Node(1, 1), new Node(98, 98));
 
         if (path != null && !path.isEmpty()) {
             testGrid.printPath(path);
@@ -31,7 +29,7 @@ public class PathFindingTest {
         }
     }
 
-    private IPathFind create(IGrid grid){
-        return new JumpPointSearch(grid);
+    private IPathFinding createPathFinding() {
+        return new JumpPointSearch();
     }
 }

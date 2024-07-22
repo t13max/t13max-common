@@ -3,6 +3,7 @@ package com.t13max.ai.pathfinding.grid;
 
 /**
  * 网格接口
+ * 用于判断是否可达 等
  *
  * @author: t13max
  * @since: 15:34 2024/7/22

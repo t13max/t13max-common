@@ -1,6 +1,6 @@
 package com.t13max.ai.pathfinding.astar;
 
-import com.t13max.ai.pathfinding.IPathFind;
+import com.t13max.ai.pathfinding.AbstractPathFinding;
 import com.t13max.ai.pathfinding.Node;
 import com.t13max.ai.pathfinding.grid.IGrid;
 import com.t13max.ai.utils.Log;
@@ -13,17 +13,10 @@ import java.util.*;
  * @author: t13max
  * @since: 15:22 2024/7/22
  */
-public class AStarPathFinding implements IPathFind {
+public class AStarPathFinding extends AbstractPathFinding {
 
     //八个方向
     private static final int[][] DIRECTIONS = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}, {-1, -1}, {1, 1}, {1, -1}, {-1, 1}};
-
-    //地图表格接口
-    private IGrid grid;
-
-    public AStarPathFinding(IGrid grid) {
-        this.grid = grid;
-    }
 
     private final Set<Node> closeSet = new HashSet<>();
 
@@ -31,7 +24,7 @@ public class AStarPathFinding implements IPathFind {
 
 
     @Override
-    public List<Node> findPath(Node start, Node end) {
+    public List<Node> findPath(IGrid grid, Node start, Node end) {
         //合法性校验
         if (!grid.isValid(end.x, end.y)) {
             Log.A_STAR.error("起点or终点 不在格子内");
@@ -73,47 +66,6 @@ public class AStarPathFinding implements IPathFind {
         }
         //未找到
         return Collections.emptyList();
-    }
-
-    /**
-     * 获取指定点的G值
-     *
-     * @Author t13max
-     * @Date 18:16 2024/7/22
-     */
-    private double getGValue(PriorityQueue<Node> openList, Node node) {
-        for (Node n : openList) {
-            if (n.equals(node)) {
-                return n.g;
-            }
-        }
-        return Double.MAX_VALUE;
-    }
-
-    /**
-     * 或者指定两点之间的预估花费
-     *
-     * @Author t13max
-     * @Date 18:16 2024/7/22
-     */
-    private double heuristic(int x1, int y1, int x2, int y2) {
-        return Math.abs(x1 - x2) + Math.abs(y1 - y2);
-    }
-
-    /**
-     * 构建路径
-     *
-     * @Author t13max
-     * @Date 18:16 2024/7/22
-     */
-    private List<Node> reconstructPath(Node node) {
-        List<Node> path = new ArrayList<>();
-        while (node != null) {
-            path.add(node);
-            node = node.parent;
-        }
-        Collections.reverse(path);
-        return path;
     }
 
 }
