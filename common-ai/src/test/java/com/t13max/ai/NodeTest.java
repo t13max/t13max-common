@@ -9,7 +9,7 @@ import com.t13max.ai.behavior4j.composites.SelectorNode;
 import com.t13max.ai.behavior4j.composites.SequenceNode;
 import com.t13max.ai.behavior4j.leaf.EndNode;
 import com.t13max.ai.behavior4j.plugins.DefaultDataSource;
-import com.t13max.ai.data.BehaviorTreeManager;
+import com.t13max.ai.behavior4j.data.BehaviorTreeManager;
 import com.t13max.ai.nodes.TestExecuteNode;
 import com.t13max.ai.nodes.TestPreconditionFail;
 import junit.framework.Assert;

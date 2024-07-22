@@ -2,7 +2,7 @@ package com.t13max.ai.behavior4j.decorators;
 
 
 import com.t13max.ai.behavior4j.BTNode;
-import com.t13max.ai.data.BehaviorTreeManager;
+import com.t13max.ai.behavior4j.data.BehaviorTreeManager;
 
 import java.lang.reflect.InvocationTargetException;
 

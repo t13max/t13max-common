@@ -1,4 +1,4 @@
-package com.t13max.ai.data;
+package com.t13max.ai.behavior4j.data;
 
 import com.t13max.ai.behavior4j.BTNode;
 import groovy.lang.GroovyObject;

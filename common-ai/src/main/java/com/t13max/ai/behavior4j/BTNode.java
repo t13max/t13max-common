@@ -3,7 +3,7 @@ package com.t13max.ai.behavior4j;
 import com.t13max.ai.behavior4j.attachments.AttachmentNode;
 import com.t13max.ai.behavior4j.event.EventNode;
 import com.t13max.ai.behavior4j.event.TriggerType;
-import com.t13max.ai.data.BehaviorTreeManager;
+import com.t13max.ai.behavior4j.data.BehaviorTreeManager;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
