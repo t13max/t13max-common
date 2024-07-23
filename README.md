@@ -9,4 +9,9 @@
 | [common-util] | 工具类     |              |
 
 
+### 备忘录
+* 打表模块开发
+* 热更
+* JMXC?
+* 研究一下BehaviorCDesigner
 
