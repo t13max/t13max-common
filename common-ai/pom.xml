@@ -18,6 +18,11 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>com.t13max</groupId>
+            <artifactId>t13max-core</artifactId>
+            <version>1.0.1</version>
+        </dependency>
 
         <dependency>
             <groupId>org.dom4j</groupId>

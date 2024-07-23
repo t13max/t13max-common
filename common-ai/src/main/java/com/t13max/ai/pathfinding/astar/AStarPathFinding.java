@@ -18,11 +18,6 @@ public class AStarPathFinding extends AbstractPathFinding {
     //八个方向
     private static final int[][] DIRECTIONS = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}, {-1, -1}, {1, 1}, {1, -1}, {-1, 1}};
 
-    private final Set<Node> closeSet = new HashSet<>();
-
-    private final PriorityQueue<Node> openList = new PriorityQueue<>();
-
-
     @Override
     public List<Node> findPath(IGrid grid, Node start, Node end) {
         //合法性校验
@@ -30,9 +25,11 @@ public class AStarPathFinding extends AbstractPathFinding {
             Log.A_STAR.error("起点or终点 不在格子内");
             return null;
         }
-        //先清空 可以重复使用
-        closeSet.clear();
-        openList.clear();
+
+        Set<Node> closeSet = new HashSet<>();
+
+        PriorityQueue<Node> openList = new PriorityQueue<>();
+
         //加入开放列表
         openList.add(start);
         //遍历所有

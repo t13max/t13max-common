@@ -1,6 +1,9 @@
 package com.t13max.ai.pathfinding;
 
 
+import com.t13max.common.object.IPooledObject;
+import com.t13max.common.object.ObjectPool;
+
 import java.util.Objects;
 
 /**
@@ -11,23 +14,31 @@ import java.util.Objects;
  * @author: t13max
  * @since: 13:58 2024/7/22
  */
-public class Node implements Comparable<Node> {
-    public int x, y;
+public class Node implements Comparable<Node>, IPooledObject {
 
+    private static ObjectPool<Node> OBJECT_POOL = new ObjectPool<>(10000, Node::new);
+
+    public int x, y;
     public double g, h;
     public Node parent;
+
+    public Node() {
+    }
 
     public Node(int x, int y) {
         this.x = x;
         this.y = y;
     }
 
+    public Node(int x, int y, Node parent) {
+        this(x, y);
+        this.parent = parent;
+    }
+
     public Node(int x, int y, double g, double h, Node parent) {
-        this.x = x;
-        this.y = y;
+        this(x, y, parent);
         this.g = g;
         this.h = h;
-        this.parent = parent;
     }
 
     public double getF() {
@@ -50,5 +61,40 @@ public class Node implements Comparable<Node> {
     @Override
     public int hashCode() {
         return Objects.hash(x, y);
+    }
+
+    @Override
+    public void borrowObject() {
+
+    }
+
+    @Override
+    public void returnObject() {
+        x = 0;
+        y = 0;
+        g = 0;
+        h = 0;
+        parent = null;
+    }
+
+    public static Node newNode(int x, int y) {
+        //Node node = OBJECT_POOL.borrowObject();
+        Node node = new Node();
+        node.x = x;
+        node.y = y;
+        return node;
+    }
+
+    public static Node newNode(int x, int y, Node parent) {
+        Node node = newNode(x, y);
+        node.parent = parent;
+        return node;
+    }
+
+    public static Node newNode(int x, int y, double g, double h, Node parent) {
+        Node node = newNode(x, y, parent);
+        node.g = g;
+        node.h = h;
+        return node;
     }
 }

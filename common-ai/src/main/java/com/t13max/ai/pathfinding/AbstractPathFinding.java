@@ -9,13 +9,17 @@ import java.util.PriorityQueue;
  * @author: t13max
  * @since: 19:02 2024/7/22
  */
-public abstract class AbstractPathFinding implements IPathFinding{
+public abstract class AbstractPathFinding implements IPathFinding {
     /**
      * 计算两点间预估花费
      *
      * @Author t13max
      * @Date 18:48 2024/7/22
      */
+    protected double heuristic(Node node1, Node node2) {
+        return heuristic(node1.x, node1.y, node2.x, node2.y);
+    }
+
     protected double heuristic(int x1, int y1, int x2, int y2) {
         // Use Manhattan distance as the heuristic
         return Math.abs(x1 - x2) + Math.abs(y1 - y2);
