@@ -21,7 +21,7 @@
         <dependency>
             <groupId>com.t13max</groupId>
             <artifactId>t13max-core</artifactId>
-            <version>1.0.1</version>
+            <version>${t13max-common.version}</version>
         </dependency>
 
         <dependency>

@@ -18,8 +18,7 @@
     <properties>
         <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-        <util.version>1.0.1</util.version>
+        <t13max-common.version>1.0.1</t13max-common.version>
 
         <junit.version>4.13.2</junit.version>
         <log4j.version>2.17.2</log4j.version>
