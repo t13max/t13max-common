@@ -94,12 +94,13 @@ public class JumpPointSearch extends AbstractPathFinding {
         }
         //斜向移动
         if ((direction[0] != 0 && direction[1] != 0)) {
-            if ((grid.isValid(x - direction[0], y) && !grid.isValid(x - direction[0], y - direction[1])) ||
-                    (grid.isValid(x, y - direction[1]) && !grid.isValid(x - direction[0], y - direction[1]))) {
+            //判断的规则和垂直水平居然一样?
+            if ((grid.isValid(x - direction[0], y + direction[1]) && !grid.isValid(x - direction[0], y)) ||
+                    (grid.isValid(x + direction[0], y - direction[1]) && !grid.isValid(x, y - direction[1]))) {
                 return new Node(x, y, 0, 0, current);
             }
         } else {
-            //水平
+            //水平 检查是否左右可达 左后或右后不可达 也就是左或右为强迫邻居
             if (direction[0] != 0) {
                 if ((grid.isValid(x, y + 1) && !grid.isValid(x - direction[0], y + 1)) ||
                         (grid.isValid(x, y - 1) && !grid.isValid(x - direction[0], y - 1))) {
@@ -113,13 +114,14 @@ public class JumpPointSearch extends AbstractPathFinding {
                 }
             }
         }
-        //斜向移动
+        // 斜向移动 没有跳点 继续往前找
         if (direction[0] != 0 && direction[1] != 0) {
-            //
+            //水平方向继续找
             Node nextJump = jump(grid, new Node(x, y, 0, 0, current), new int[]{direction[0], 0}, goalX, goalY);
             if (nextJump != null) {
                 return new Node(x, y, 0, 0, current);
             }
+            //垂直方向继续找
             nextJump = jump(grid, new Node(x, y, 0, 0, current), new int[]{0, direction[1]}, goalX, goalY);
             if (nextJump != null) {
                 return new Node(x, y, 0, 0, current);
