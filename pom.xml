@@ -13,18 +13,21 @@
         <module>common-ai</module>
         <module>common-util</module>
         <module>common-core</module>
+        <module>common-template</module>
     </modules>
 
     <properties>
         <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <t13max-common.version>1.0.1</t13max-common.version>
+        <t13max-core.version>1.0.1</t13max-core.version>
 
         <junit.version>4.13.2</junit.version>
         <log4j.version>2.17.2</log4j.version>
         <lombok.version>1.18.30</lombok.version>
         <groovy.version>3.0.9</groovy.version>
         <dom4j.version>2.1.4</dom4j.version>
+        <easyexcel.version>3.0.5</easyexcel.version>
     </properties>
     <build>
         <plugins>
