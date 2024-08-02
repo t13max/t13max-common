@@ -6,9 +6,7 @@ import java.io.IOException;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.util.Enumeration;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -19,6 +17,9 @@ import java.util.jar.JarFile;
  * @since: 14:15 2024/5/23
  */
 public class PackageUtil {
+
+    //缓存 防止重复扫描
+    private static final Map<String, Set<Class<?>>> CACHE = new HashMap<>();
 
     /**
      * 扫描类 使用指定类加载器
@@ -63,7 +64,7 @@ public class PackageUtil {
                                             if (name.endsWith(".class") && !entry.isDirectory()) {
                                                 String className = name.substring(packageName.length() + 1, name.length() - 6);
                                                 try {
-                                                    classes.add(Class.forName(packageName + '.' + className,true,classLoader));
+                                                    classes.add(Class.forName(packageName + '.' + className, true, classLoader));
                                                 } catch (ClassNotFoundException e) {
                                                     e.printStackTrace();
                                                 }
@@ -93,6 +94,22 @@ public class PackageUtil {
     public static Set<Class<?>> scan(String pack) {
         return scan(pack, Thread.currentThread().getContextClassLoader());
     }
+
+    /**
+     * 扫描并检查缓存
+     * 如果某些类需要经常被扫 就应该缓存下来 下次直接获取
+     *
+     * @Author t13max
+     * @Date 17:02 2024/8/2
+     */
+    public static Set<Class<?>> scanCache(String pack) {
+        Set<Class<?>> classes = CACHE.get(pack);
+        if (classes != null) return classes;
+        classes = scan(pack);
+        CACHE.put(pack, classes);
+        return classes;
+    }
+
 
     /**
      * 以文件的形式来获取包下的所有Class

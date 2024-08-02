@@ -46,7 +46,7 @@ public class GameEventBus extends ManagerBase {
         }
     }
 
-    public void postEvent(It13maxEvent event) {
+    public void postEvent(IEvent event) {
         IEventEnum eventEnum = event.getEventEnum();
 
         LinkedList<IEventListener> listeners = listenersMap.get(eventEnum);

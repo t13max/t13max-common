@@ -12,7 +12,7 @@ public interface IEventListener {
 
     Set<IEventEnum> getInterestedEvent();
 
-    void onEvent(It13maxEvent gameEvent);
+    void onEvent(IEvent gameEvent);
 
     int getPriority();
 }
