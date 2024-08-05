@@ -13,9 +13,9 @@ import java.util.List;
  * @author: t13max
  * @since: 11:44 2024/8/2
  */
+@Getter
 public class ReadDataListener<T extends ITemplate> implements ReadListener<T> {
 
-    @Getter
     private final List<T> list = new ArrayList<>();
 
     @Override
