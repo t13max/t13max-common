@@ -54,6 +54,11 @@ public enum DataTypeEnum {
         public Object getDefaultValue() {
             return Collections.emptyList();
         }
+
+        @Override
+        public String getConvertor() {
+            return "ToStrListConverter.class";
+        }
     },
 
     MAP("map", "Map<Integer,Integer>") {

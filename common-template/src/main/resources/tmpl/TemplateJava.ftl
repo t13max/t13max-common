@@ -1,9 +1,9 @@
 package ${package};
 
 import java.util.*;
+import com.t13max.template.ITemplate;
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.t13max.template.converter.ToIntListConverter;
-import com.t13max.template.converter.ToIntMapConverter;
+import com.t13max.template.converter.*;
 
 /**
  * ${excelName}

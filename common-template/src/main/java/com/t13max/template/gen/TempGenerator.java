@@ -43,11 +43,11 @@ public class TempGenerator {
         //打印路径
         printEnv();
 
-        //先清除
-        cleanUp();
-
         //读取
         read();
+
+        //先清除
+        cleanUp();
 
         //生成json
         genJson();
@@ -113,7 +113,7 @@ public class TempGenerator {
                 }
                 resMap.put("paramMethod", paramMethod.toString());
                 // 生成实体类
-                this.genTemplateFile("JavaTemplate.ftl", GenerateConfig.javaPath, entityName + ".java", resMap);
+                this.genTemplateFile("TemplateJava.ftl", GenerateConfig.javaPath, entityName + ".java", resMap);
 
             }
         }

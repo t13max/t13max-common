@@ -52,6 +52,7 @@ public class SheetData {
             case 0 -> {
                 for (Map.Entry<Integer, ReadCellData<?>> entry : headMap.entrySet()) {
                     String stringValue = entry.getValue().getStringValue();
+                    if (stringValue == null) continue;
                     typeList.add(entry.getKey(), stringValue);
                 }
             }
@@ -59,6 +60,7 @@ public class SheetData {
             case 1 -> {
                 for (Map.Entry<Integer, ReadCellData<?>> entry : headMap.entrySet()) {
                     String stringValue = entry.getValue().getStringValue();
+                    if (stringValue == null) continue;
                     nameList.add(entry.getKey(), stringValue);
                 }
             }
