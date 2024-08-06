@@ -2,6 +2,7 @@ package com.t13max.template.gen;
 
 import lombok.Getter;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,10 +15,17 @@ import java.util.Map;
 @Getter
 public class ExcelData {
 
-    private String excelName;
+    private final String excelName;
 
-    /**
-     * Sheets数据集合
-     */
+    private final File file;
+
+    //Sheets数据集合
     private final Map<String, SheetData> sheetDataMap = new HashMap<>(16);
+
+    public ExcelData(String excelName, File file) {
+        this.excelName = excelName;
+        this.file = file;
+    }
+
+
 }

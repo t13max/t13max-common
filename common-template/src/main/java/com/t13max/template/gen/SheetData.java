@@ -5,6 +5,7 @@ import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.metadata.data.ReadCellData;
 import com.t13max.template.exception.TemplateException;
 import com.t13max.template.util.ExcelUtils;
+import lombok.Getter;
 
 import java.util.*;
 
@@ -14,12 +15,15 @@ import java.util.*;
  * @author: t13max
  * @since: 16:02 2024/8/5
  */
+@Getter
 public class SheetData {
 
     //excel名
     private final String excelName;
     //页签名
     private final String sheetName;
+    //注释
+    private String sheetNote = "";
     //表头数据类型
     private final List<String> typeList = new ArrayList<>();
     //表头名字

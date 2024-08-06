@@ -1,8 +1,7 @@
 package com.t13max.template.helper;
 
+import com.t13max.template.HeroTemplate;
 import com.t13max.template.ITemplate;
-import com.t13max.template.entity.HeroTemplate;
-import com.t13max.template.helper.TemplateHelper;
 
 /**
  * @author: t13max
@@ -11,7 +10,7 @@ import com.t13max.template.helper.TemplateHelper;
 public class HeroHelper extends TemplateHelper<HeroTemplate> {
 
     public HeroHelper() {
-        super("hero.xlsx");
+        super("excel/hero.xlsx");
     }
 
     @Override

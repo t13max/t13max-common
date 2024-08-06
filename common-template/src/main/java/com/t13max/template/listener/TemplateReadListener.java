@@ -13,6 +13,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
+ * excel表读取监听
+ *
  * @author: t13max
  * @since: 16:20 2024/8/5
  */
@@ -54,6 +56,6 @@ public class TemplateReadListener implements ReadListener<LinkedHashMap<Integer,
 
     @Override
     public void doAfterAllAnalysed(AnalysisContext analysisContext) {
-
+        Log.template.info("{}处理完毕, 共有{}个sheet", excelData.getExcelName(), excelData.getSheetDataMap().size());
     }
 }

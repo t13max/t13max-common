@@ -2,7 +2,6 @@ package com.t13max.template.enums;
 
 import lombok.Getter;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,52 +13,71 @@ import java.util.Map;
 @Getter
 public enum DataTypeEnum {
 
-    INT("int", "Integer") {
+    INT("int", "int") {
         @Override
         public Object getDefaultValue() {
             return 0;
         }
     },
-    INT_ARRAY("int[]", "ArrayList") {
+    INT_ARRAY("int[]", "List<Integer>") {
         @Override
         public Object getDefaultValue() {
             return Collections.emptyList();
         }
+
+        @Override
+        public String getConvertor() {
+            return "ToIntListConverter.class";
+        }
     },
-    FLOAT("float","Float") {
+    FLOAT("float", "float") {
         @Override
         public Object getDefaultValue() {
             return 0f;
         }
     },
-    FLOAT_ARR("float[]", "ArrayList") {
+    FLOAT_ARR("float[]", "List<Float>") {
         @Override
         public Object getDefaultValue() {
             return Collections.emptyList();
         }
     },
 
-    STRING("String","String") {
+    STRING("String", "String") {
         @Override
         public Object getDefaultValue() {
             return "";
         }
     },
-    STRING_ARR("String[]","ArrayList") {
+    STRING_ARR("String[]", "List<String>") {
         @Override
         public Object getDefaultValue() {
             return Collections.emptyList();
         }
     },
 
-    ;
+    MAP("map", "Map<Integer,Integer>") {
+        @Override
+        public Object getDefaultValue() {
+            return Collections.emptyMap();
+        }
+
+        @Override
+        public String getConvertor() {
+            return "ToIntMapConverter.class";
+        }
+    };
 
 
     private final String dataType;
 
-    private final String wrapperType;
+    private final String javaType;
 
     public abstract Object getDefaultValue();
+
+    public String getConvertor() {
+        return "";
+    }
 
     private final static Map<String, DataTypeEnum> DATA_MAP = new HashMap<>();
 
@@ -69,12 +87,14 @@ public enum DataTypeEnum {
         }
     }
 
-    DataTypeEnum(String dataType, String wrapperType) {
+    DataTypeEnum(String dataType, String javaType) {
         this.dataType = dataType;
-        this.wrapperType = wrapperType;
+        this.javaType = javaType;
     }
 
     public static DataTypeEnum of(String type) {
         return DATA_MAP.get(type);
     }
+
+
 }

@@ -72,6 +72,7 @@ public class ExcelUtils {
                 case STRING_ARR:
                 case INT_ARRAY:
                 case FLOAT_ARR:
+                case MAP:
                     return value;
                 default: {
                     throw new TemplateException("未知的数据类型");

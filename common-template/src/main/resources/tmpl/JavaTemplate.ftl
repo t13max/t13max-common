@@ -1,6 +1,9 @@
 package ${package};
 
 import java.util.*;
+import com.alibaba.excel.annotation.ExcelProperty;
+import com.t13max.template.converter.ToIntListConverter;
+import com.t13max.template.converter.ToIntMapConverter;
 
 /**
  * ${excelName}
@@ -10,7 +13,6 @@ import java.util.*;
  *
  * 系统生成类 请勿修改
  */
-@ConfigJSON
 public class ${entityName} implements ITemplate {
 
 <#list props as prop>
@@ -27,4 +29,14 @@ public class ${entityName} implements ITemplate {
     public final ${prop.type} ${prop.name};
 </#list>
 
+    public ${entityName}(${paramMethod}) {
+    <#list props as prop>
+        this.${prop.name} = ${prop.name};
+    </#list>
+    }
+
+    @Override
+    public int getId() {
+        return id;
+    }
 }
