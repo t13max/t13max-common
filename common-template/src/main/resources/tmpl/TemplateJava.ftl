@@ -2,8 +2,6 @@ package ${package};
 
 import java.util.*;
 import com.t13max.template.ITemplate;
-import com.alibaba.excel.annotation.ExcelProperty;
-import com.t13max.template.converter.*;
 
 /**
  * ${excelName}
@@ -21,17 +19,16 @@ public class ${entityName} implements ITemplate {
 <#else>
     /** !!! 此参数无备注 !!! */
 </#if>
-<#if prop.convertor?? && (prop.convertor?length > 0)>
-    @ExcelProperty(value = "${prop.name}", converter = ${prop.convertor})
-<#else>
-    @ExcelProperty("${prop.name}")
-</#if>
     public final ${prop.type} ${prop.name};
 </#list>
 
     public ${entityName}(${paramMethod}) {
     <#list props as prop>
+    <#if prop.type?? && (prop.type?contains("List"))>
+        this.${prop.name} = Collections.unmodifiableList(${prop.name});
+    <#else>
         this.${prop.name} = ${prop.name};
+    </#if>
     </#list>
     }
 

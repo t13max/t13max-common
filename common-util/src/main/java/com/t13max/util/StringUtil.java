@@ -2,6 +2,10 @@ package com.t13max.util;
 
 import lombok.experimental.UtilityClass;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,6 +19,14 @@ import java.util.regex.Pattern;
 @UtilityClass
 public class StringUtil {
 
+    public static final String SEMICOLON = ";";
+
+    public static final String COMMA = ",";
+
+    public static final String ASTERISK = "\\*";
+
+    public static final String COLON = ":";
+
     /**
      * 首字母转小写
      *
@@ -25,7 +37,7 @@ public class StringUtil {
         if (Character.isLowerCase(s.charAt(0))) {
             return s;
         } else {
-            return (new StringBuilder()).append(Character.toLowerCase(s.charAt(0))).append(s.substring(1)).toString();
+            return Character.toLowerCase(s.charAt(0)) + s.substring(1);
         }
     }
 
@@ -39,7 +51,7 @@ public class StringUtil {
         if (Character.isUpperCase(s.charAt(0))) {
             return s;
         } else {
-            return (new StringBuilder()).append(Character.toUpperCase(s.charAt(0))).append(s.substring(1)).toString();
+            return Character.toUpperCase(s.charAt(0)) + s.substring(1);
         }
     }
 
@@ -50,7 +62,7 @@ public class StringUtil {
      * @Date 18:30 2024/8/2
      */
     public static String camel2Underline(String line) {
-        if (line == null || "".equals(line)) {
+        if (line == null || line.isEmpty()) {
             return "";
         }
         line = String.valueOf(line.charAt(0)).toUpperCase().concat(line.substring(1));
@@ -65,5 +77,40 @@ public class StringUtil {
         return sb.toString();
     }
 
+    public static List<Integer> getIntList(String str) {
+        return getIntList(str, COMMA);
+    }
 
+    public static List<Integer> getIntList(String str, String separation) {
+        return Arrays.stream(str.split(separation)).map(Integer::parseInt).toList();
+    }
+
+    public static List<Float> getFloatList(String str) {
+        return getFloatList(str, COMMA);
+    }
+
+    public static List<Float> getFloatList(String str, String separation) {
+        return Arrays.stream(str.split(separation)).map(Float::parseFloat).toList();
+    }
+
+    public static List<String> getStrList(String str) {
+        return getStrList(str, COMMA);
+    }
+
+    public static List<String> getStrList(String str, String separation) {
+        return Arrays.stream(str.split(separation)).toList();
+    }
+
+    public static Map<Integer, Integer> getIntMap(String str) {
+        Map<Integer, Integer> result = new HashMap<>();
+        List<String> strList = getStrList(str);
+        for (String kv : strList) {
+            String[] split = kv.split(ASTERISK);
+            if (split.length != 2) {
+                continue;
+            }
+            result.put(Integer.parseInt(split[0]), Integer.parseInt(split[1]));
+        }
+        return result;
+    }
 }

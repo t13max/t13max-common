@@ -179,7 +179,8 @@ public class TempGenerator {
             for (SheetData sheetData : excelData.getSheetDataMap().values()) {
                 List<Map<Object, Object>> dataMap = sheetData.getDataMap();
                 String formatContent = JSON.toJSONString(dataMap, SerializerFeature.PrettyFormat,
-                        SerializerFeature.WriteMapNullValue, SerializerFeature.WriteDateUseDateFormat, SerializerFeature.SortField);
+                        SerializerFeature.WriteMapNullValue, SerializerFeature.WriteDateUseDateFormat,
+                        SerializerFeature.SortField,SerializerFeature.DisableCircularReferenceDetect);
                 FileUtil.writeFile(GenerateConfig.jsonPath, sheetData.getSheetName(), "json", formatContent);
             }
         }

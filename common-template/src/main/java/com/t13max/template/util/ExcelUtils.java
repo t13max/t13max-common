@@ -4,12 +4,14 @@ import com.alibaba.excel.metadata.data.ReadCellData;
 import com.alibaba.excel.util.StringUtils;
 import com.t13max.template.enums.DataTypeEnum;
 import com.t13max.template.exception.TemplateException;
+import com.t13max.util.StringUtil;
 import lombok.experimental.UtilityClass;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.util.Collections;
 
 /**
  * @author: t13max
@@ -21,7 +23,7 @@ public class ExcelUtils {
     public Object getEasyExcelCellValue(ReadCellData readCellData, String dataType, String dataStr) {
         // 设置默认值
         if (readCellData == null || StringUtils.isEmpty(dataStr)) {
-            return getDefaultCellValue(dataType);
+            return "";
         }
 
         // 处理数据
@@ -68,11 +70,19 @@ public class ExcelUtils {
                 case FLOAT: {
                     return Float.parseFloat(str);
                 }
+                case STRING_ARR: {
+                    return StringUtil.getStrList(str);
+                }
+                case INT_ARRAY: {
+                    return StringUtil.getIntList(str);
+                }
+                case FLOAT_ARR: {
+                    return StringUtil.getFloatList(str);
+                }
+                case MAP: {
+                    return StringUtil.getIntMap(str);
+                }
                 case STRING:
-                case STRING_ARR:
-                case INT_ARRAY:
-                case FLOAT_ARR:
-                case MAP:
                     return value;
                 default: {
                     throw new TemplateException("未知的数据类型");
@@ -132,17 +142,6 @@ public class ExcelUtils {
     private static final MathContext mathContext = new MathContext(15, RoundingMode.HALF_UP);
 
     public static Object getDefaultCellValue(DataTypeEnum type) {
-        if (type == null) {
-            return "";
-        }
-
-        switch (type) {
-            case INT_ARRAY: {
-                return "";
-            }
-            default: {
-                return type.getDefaultValue();
-            }
-        }
+        return type.getDefaultValue();
     }
 }

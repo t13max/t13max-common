@@ -1,16 +1,10 @@
 package com.t13max.template.helper;
 
-import com.alibaba.excel.EasyExcel;
-import com.alibaba.excel.support.ExcelTypeEnum;
-import com.t13max.common.exception.CommonException;
 import com.t13max.template.ITemplate;
 import com.t13max.template.exception.TemplateException;
-import com.t13max.template.listener.ReadDataListener;
+import com.t13max.template.util.JsonUtils;
 import com.t13max.template.util.Log;
-import org.apache.logging.log4j.core.util.JsonUtils;
 
-import java.io.File;
-import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -90,13 +84,11 @@ public abstract class TemplateHelper<T extends ITemplate> {
     }
 
     public boolean doLoad() {
+        //ReadDataListener<T> tReadDataListener = new ReadDataListener<>();
+        //EasyExcel.read("/Users/antingbi/IdeaProjects/t13max-common/common-template/target/test-classes/" + fileName, this.getClazz(), tReadDataListener).headRowNumber(2).sheet("hero").doRead();
+        //List<T> iTemplates = tReadDataListener.getList();
         TEMP_DATA_MAP = new HashMap<>();
-
-        ReadDataListener<T> tReadDataListener = new ReadDataListener<>();
-
-        EasyExcel.read("/Users/antingbi/IdeaProjects/t13max-common/common-template/target/test-classes/" + fileName, this.getClazz(), tReadDataListener).headRowNumber(2).sheet("hero").doRead();
-
-        List<T> iTemplates = tReadDataListener.getList();
+        List<T> iTemplates = JsonUtils.readCommodityTxt(fileName, this.getClazz());
         if (iTemplates == null || iTemplates.isEmpty()) {
             return false;
         }

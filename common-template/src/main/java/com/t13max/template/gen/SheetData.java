@@ -76,8 +76,12 @@ public class SheetData {
      * @Date 16:34 2024/8/5
      */
     public void processDataSheet(LinkedHashMap<Integer, String> rowMap, AnalysisContext context) {
+        String id = rowMap.get(0);
+        if (id == null||id.isEmpty()) {
+            return;
+        }
         rowIndex = context.readSheetHolder().getRowIndex();
-        if (rowIndex <= GenerateConfig.HEAD_COUNT) {
+        if (rowIndex < GenerateConfig.HEAD_COUNT) {
             return;
         }
         final Map<Object, Object> data = new LinkedHashMap<>(16);

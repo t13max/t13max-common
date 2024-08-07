@@ -49,7 +49,7 @@ public class TemplateManager extends ManagerBase {
 
                 // 创建实例
                 Object inst = clazz.getDeclaredConstructor().newInstance();
-                TemplateHelper helper = (TemplateHelper) inst;
+                TemplateHelper<?> helper = (TemplateHelper<?>) inst;
                 helperMap.put(clazz.getName(), helper);
             }
 
@@ -74,7 +74,7 @@ public class TemplateManager extends ManagerBase {
         try {
             helperMap.values().forEach(TemplateHelper::load);
 
-            for (TemplateHelper templateHelper : helperMap.values()) {
+            for (TemplateHelper<?> templateHelper : helperMap.values()) {
                 if (!templateHelper.configCheck()) {
                     //直接抛出异常 不让起服
                     throw new CommonException("加载表失败");
