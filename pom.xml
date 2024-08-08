@@ -14,6 +14,7 @@
         <module>common-util</module>
         <module>common-core</module>
         <module>common-template</module>
+        <module>t13max-bot</module>
     </modules>
 
     <properties>
