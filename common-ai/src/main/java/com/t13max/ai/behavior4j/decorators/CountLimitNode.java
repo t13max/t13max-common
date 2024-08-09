@@ -61,8 +61,7 @@ public class CountLimitNode<E> extends Decorator<E> {
 
     public void setCondition(BTNode<E> condition) {
         if (!(condition instanceof BaseCondition))
-            throw new IllegalArgumentException("The condition class type can't support in CountLimitNode!");
-
+            throw new IllegalArgumentException("入参错误, 必须是条件节点");
         this.condition = condition;
     }
 }

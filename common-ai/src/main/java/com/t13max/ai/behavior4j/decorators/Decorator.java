@@ -1,6 +1,5 @@
 package com.t13max.ai.behavior4j.decorators;
 
-
 import com.t13max.ai.behavior4j.BTNode;
 
 import java.lang.reflect.InvocationTargetException;
@@ -25,7 +24,7 @@ public abstract class Decorator<E> extends BTNode<E> {
     @Override
     protected int addChildToNode(BTNode<E> child) {
         if (this.child != null)
-            throw new IllegalStateException("A decorator node cannot have more than one child");
+            throw new IllegalStateException("装饰器不能添加子节点");
         this.child = child;
         return 0;
     }
@@ -39,7 +38,7 @@ public abstract class Decorator<E> extends BTNode<E> {
     public BTNode<E> getChild(int i) {
         if (i == 0 && child != null)
             return child;
-        throw new IndexOutOfBoundsException("index can't be >= size: " + i + " >= " + getChildCount());
+        throw new IndexOutOfBoundsException("索引非法 " + i + " >= " + getChildCount());
     }
 
     @Override

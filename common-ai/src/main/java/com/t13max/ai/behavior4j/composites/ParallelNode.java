@@ -14,13 +14,15 @@ import java.util.List;
  */
 public class ParallelNode<E> extends BranchNode<E> {
 
-    /*** 节点策略*/
+    //节点策略
     private Policy policy;
-    /*** 协调器*/
+    //协调器
     private Coordinator coordinator;
-
+    //是否存在正在执行的子节点
     private boolean hasRunningChild;
+    //执行结果
     private Boolean result;
+    //当前子节点
     private int currentChildIndex;
 
     public ParallelNode() {
@@ -59,10 +61,6 @@ public class ParallelNode<E> extends BranchNode<E> {
 
     @Override
     public void resetAllChildren() {
-//        for (int i = 0, n = getChildCount(); i < n; i++) {
-//            BTNode<E> child = getChild(i);
-//            child.reset();
-//        }
         super.resetAllChildren();
     }
 
@@ -75,7 +73,12 @@ public class ParallelNode<E> extends BranchNode<E> {
     }
 
     public enum Policy {
-        /*** 顺序策略 所有子节点执行成功 返回成功 */
+        /**
+         * 顺序策略 所有子节点执行成功 返回成功
+         *
+         * @Author t13max
+         * @Date 13:03 2024/8/9
+         */
         SEQUENCE() {
             @Override
             public Boolean onChildSuccess(ParallelNode<?> parallel) {
@@ -103,7 +106,12 @@ public class ParallelNode<E> extends BranchNode<E> {
                 return Boolean.FALSE;
             }
         },
-        /*** 选择策略*/
+        /**
+         * 选择策略
+         *
+         * @Author t13max
+         * @Date 13:03 2024/8/9
+         */
         SELECTOR() {
             @Override
             public Boolean onChildSuccess(ParallelNode<?> parallel) {
@@ -137,7 +145,12 @@ public class ParallelNode<E> extends BranchNode<E> {
     }
 
     public enum Coordinator {
-        /*** 子节点每次都会恢复或重新执行 */
+        /**
+         * 子节点每次都会恢复或重新执行
+         *
+         * @Author t13max
+         * @Date 13:03 2024/8/9
+         */
         RESUME() {
             @Override
             public <E> void execute(ParallelNode<E> parallel) {
@@ -167,7 +180,12 @@ public class ParallelNode<E> extends BranchNode<E> {
                 parallel.onRunning();
             }
         },
-        /*** 子节点执行成功或失败后需等到并行节点成功失败后才能重新执行 */
+        /**
+         * 子节点执行成功或失败后需等到并行节点成功失败后才能重新执行
+         *
+         * @Author t13max
+         * @Date 13:03 2024/8/9
+         */
         JOIN() {
             @Override
             public <E> void execute(ParallelNode<E> parallel) {

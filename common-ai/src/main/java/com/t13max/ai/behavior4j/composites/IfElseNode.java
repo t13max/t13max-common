@@ -26,10 +26,11 @@ public class IfElseNode<E> extends SingleRunningBranchNode<E> {
     public void childSuccess(BTNode<E> runningNode) {
         super.childSuccess(runningNode);
         if (currentChildIndex == 0) {
+            //成功了 执行if(true)的逻辑
             ++currentChildIndex;
-            run(); // Run success condition child
+            run();
         } else {
-            onSuccess(); //  return onSuccess status
+            onSuccess();
         }
     }
 
@@ -37,10 +38,11 @@ public class IfElseNode<E> extends SingleRunningBranchNode<E> {
     public void childFail(BTNode<E> runningNode) {
         super.childFail(runningNode);
         if (currentChildIndex == 0) {
+            //失败了 执行else逻辑
             currentChildIndex = 2;
-            run(); // Run failure condition child
+            run();
         } else {
-            onFail(); // return onFail status
+            onFail();
         }
     }
 

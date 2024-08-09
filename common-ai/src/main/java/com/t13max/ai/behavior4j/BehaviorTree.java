@@ -19,7 +19,7 @@ public class BehaviorTree<E> extends BTNode<E> {
 
     private BTNode<E> rootNode;
 
-    private E agent;
+    private E owner;
 
     protected Map<Integer, Set<BTNode<E>>> listeners = new HashMap<>();
 
@@ -30,9 +30,9 @@ public class BehaviorTree<E> extends BTNode<E> {
         this(null, null, null);
     }
 
-    public BehaviorTree(BTNode<E> root, E agent, String name) {
+    public BehaviorTree(BTNode<E> root, E owner, String name) {
         this.rootNode = root;
-        this.agent = agent;
+        this.owner = owner;
         this.tree = this;
         this.name = name;
     }
@@ -93,8 +93,8 @@ public class BehaviorTree<E> extends BTNode<E> {
     }
 
     @Override
-    public E getAgent() {
-        return agent;
+    public E getOwner() {
+        return owner;
     }
 
     @Override
@@ -121,7 +121,7 @@ public class BehaviorTree<E> extends BTNode<E> {
     @Override
     public void setParent(BTNode<E> parent) {
         this.parent = parent;
-        this.agent = parent.getTree() != null ? parent.getTree().agent : null;
+        this.owner = parent.getTree() != null ? parent.getTree().owner : null;
     }
 
     @Override
@@ -144,8 +144,8 @@ public class BehaviorTree<E> extends BTNode<E> {
         node.setRegister(false);
     }
 
-    public void setAgent(E agent) {
-        this.agent = agent;
+    public void setOwner(E owner) {
+        this.owner = owner;
     }
 
     /**

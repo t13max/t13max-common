@@ -1,4 +1,4 @@
-package com.t13max.ai.behavior4j.data;
+package com.t13max.ai.behavior4j.utils;
 
 import com.t13max.ai.behavior4j.BTNode;
 import com.t13max.ai.behavior4j.attachments.AttachmentNode;
@@ -7,12 +7,11 @@ import com.t13max.ai.behavior4j.composites.*;
 import com.t13max.ai.behavior4j.decorators.*;
 import com.t13max.ai.behavior4j.event.EventNode;
 import com.t13max.ai.behavior4j.event.TriggerType;
-import com.t13max.ai.behavior4j.leaf.EndNode;
-import com.t13max.ai.behavior4j.leaf.FailureNode;
-import com.t13max.ai.behavior4j.leaf.NoopNode;
-import com.t13max.ai.behavior4j.leaf.SuccessNode;
+import com.t13max.ai.behavior4j.leaf.*;
 import org.dom4j.Element;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -22,16 +21,17 @@ import java.util.List;
  * @Date 13:49 2024/5/23
  */
 public class BehaviorTreeLoader {
+
     private static final String ATTR_CLASS = "class";
 
-    static <T> List<BTNode<T>> loadElement(Element element, ScriptDefine script) {
+    static <T> List<BTNode<T>> loadElement(Element element) {
         List<BTNode<T>> nodeList = new ArrayList<>();
         Iterator<Element> it = element.elementIterator();
 
         while (it.hasNext()) {
             Element subElement = it.next();
             if ("node".equals(subElement.getName())) {
-                BTNode<T> subNode = loadNode(subElement, script);
+                BTNode<T> subNode = loadNode(subElement);
                 nodeList.add(subNode);
             } else if ("attachment".equals(subElement.getName())) {
                 // event attachment
@@ -39,7 +39,7 @@ public class BehaviorTreeLoader {
                     BTNode<T> subNode = loadEventNode(subElement);
                     nodeList.add(subNode);
                 } else {
-                    BTNode<T> subNode = loadAttachment(subElement, script);
+                    BTNode<T> subNode = loadAttachment(subElement);
                     nodeList.add(subNode);
                 }
             }
@@ -48,12 +48,12 @@ public class BehaviorTreeLoader {
         return nodeList;
     }
 
-    private static <T> BTNode<T> loadCustomConnector(Element element, ScriptDefine script) {
+    private static <T> BTNode<T> loadCustomConnector(Element element) {
         Iterator<Element> it = element.elementIterator();
         while (it.hasNext()) {
             Element subElement = it.next();
             if ("custom".equals(subElement.getName())) {
-                List<BTNode<T>> nodeList = loadElement(subElement, script);
+                List<BTNode<T>> nodeList = loadElement(subElement);
                 if (!nodeList.isEmpty())
                     return nodeList.get(0);
             }
@@ -62,10 +62,10 @@ public class BehaviorTreeLoader {
         return null;
     }
 
-    private static <T> BTNode<T> loadNode(Element nodeElement, ScriptDefine script) {
+    private static <T> BTNode<T> loadNode(Element nodeElement) {
         String classType = nodeElement.attributeValue(ATTR_CLASS);
 
-        List<BTNode<T>> nodes = loadElement(nodeElement, script);
+        List<BTNode<T>> nodes = loadElement(nodeElement);
         BTNode<T> node;
         switch (classType) {
             case "Parallel":
@@ -75,42 +75,46 @@ public class BehaviorTreeLoader {
                 break;
             case "Sequence": {
                 node = new SequenceNode<>();
-                BTNode<T> condition = loadCustomConnector(nodeElement, script);
+                BTNode<T> condition = loadCustomConnector(nodeElement);
                 if (condition != null)
                     ((SingleRunningBranchNode<T>) node).setCondition(condition);
                 break;
             }
             case "RandomSequence": {
                 node = new RandomSequenceNode<>();
-                BTNode<T> condition = loadCustomConnector(nodeElement, script);
+                BTNode<T> condition = loadCustomConnector(nodeElement);
                 if (condition != null)
                     ((SingleRunningBranchNode<T>) node).setCondition(condition);
                 break;
             }
             case "Selector": {
                 node = new SelectorNode<>();
-                BTNode<T> condition = loadCustomConnector(nodeElement, script);
+                BTNode<T> condition = loadCustomConnector(nodeElement);
                 if (condition != null)
                     ((SingleRunningBranchNode<T>) node).setCondition(condition);
                 break;
             }
             case "RandomSelector": {
                 node = new RandomSelectorNode<>();
-                BTNode<T> condition = loadCustomConnector(nodeElement, script);
+                BTNode<T> condition = loadCustomConnector(nodeElement);
                 if (condition != null)
                     ((SingleRunningBranchNode<T>) node).setCondition(condition);
                 break;
             }
             case "ProbabilitySelector": {
                 node = new ProbabilitySelectorNode<>();
-                BTNode<T> condition = loadCustomConnector(nodeElement, script);
+                BTNode<T> condition = loadCustomConnector(nodeElement);
                 if (condition != null)
                     ((SingleRunningBranchNode<T>) node).setCondition(condition);
                 break;
             }
             case "CaseSelectorNode": {
-                node = script.getNode(Integer.parseInt(nodeElement.attributeValue("id")));
-                BTNode<T> condition = loadCustomConnector(nodeElement, script);
+                String impl = nodeElement.attributeValue("impl");
+                node = createNode(impl);
+                if (!(node instanceof CaseSelectorNode)) {
+                    throw new IllegalArgumentException("实现类配置错误, class=" + impl);
+                }
+                BTNode<T> condition = loadCustomConnector(nodeElement);
                 if (condition != null)
                     ((CaseSelectorNode<T>) node).setCondition(condition);
                 break;
@@ -126,8 +130,8 @@ public class BehaviorTreeLoader {
                 node = new AlwaysSuccessNode<>();
                 break;
             case "Repeat": {
-                String count = nodeElement.attributeValue("Count");
-                String isFrame = nodeElement.attributeValue("DoneWithinFrame");
+                String count = nodeElement.attributeValue("count");
+                String isFrame = nodeElement.attributeValue("doneWithinFrame");
                 node = new RepeatNode<>(Integer.parseInt(count), Boolean.parseBoolean(isFrame));
                 break;
             }
@@ -141,15 +145,20 @@ public class BehaviorTreeLoader {
                 node = new UntilSuccessNode<>();
                 break;
             case "AssignmentNode":
-            case "ActionNode":
-                node = script.getNode(Integer.parseInt(nodeElement.attributeValue("id")));
+            case "ActionNode": {
+                String impl = nodeElement.attributeValue("impl");
+                node = createNode(impl);
+                if (!(node instanceof ActionNode)) {
+                    throw new IllegalArgumentException("实现类配置错误, class=" + impl);
+                }
                 break;
+            }
             case "Noop":
                 node = new NoopNode<>();
                 break;
             case "End":
-                String endOutside = nodeElement.attributeValue("EndOutside");
-                String endStatus = nodeElement.attributeValue("EndStatus");
+                String endOutside = nodeElement.attributeValue("endOutside");
+                String endStatus = nodeElement.attributeValue("endStatus");
                 node = new EndNode<>(endStatus, Boolean.parseBoolean(endOutside));
                 break;
             case "FailureNode":
@@ -158,11 +167,8 @@ public class BehaviorTreeLoader {
             case "Success":
                 node = new SuccessNode<>();
                 break;
-            case "Log":
-                node = new LogNode<>();
-                break;
             case "DecoratorWeight":
-                String weight = nodeElement.attributeValue("Weight");
+                String weight = nodeElement.attributeValue("weight");
                 node = new WeightNode<>(Integer.parseInt(weight));
                 break;
             case "CaseNode":
@@ -170,11 +176,15 @@ public class BehaviorTreeLoader {
                 node = new CaseNode<>(caseValue.replace("\"", ""));
                 break;
             case "ReferencedBehavior":
-                String subTreeName = nodeElement.attributeValue("ReferenceBehavior");
+                String subTreeName = nodeElement.attributeValue("referenceBehavior");
                 node = new ReferenceNode<>(subTreeName.replace("\"", ""));
                 break;
             case "ConditionNode": {
-                node = script.getNode(Integer.parseInt(nodeElement.attributeValue("id")));
+                String impl = nodeElement.attributeValue("impl");
+                node = createNode(impl);
+                if (!(node instanceof ConditionNode)) {
+                    throw new IllegalArgumentException("实现类配置错误, class=" + impl);
+                }
                 break;
             }
             case "And":
@@ -184,15 +194,15 @@ public class BehaviorTreeLoader {
                 node = new OrNode<>();
                 break;
             case "DecoratorCountLimit": {
-                String limitCount = nodeElement.attributeValue("Count");
+                String limitCount = nodeElement.attributeValue("count");
                 node = new CountLimitNode<>(Integer.parseInt(limitCount));
-                BTNode<T> condition = loadCustomConnector(nodeElement, script);
+                BTNode<T> condition = loadCustomConnector(nodeElement);
                 if (condition != null)
                     ((CountLimitNode<T>) node).setCondition(condition);
                 break;
             }
             case "DecoratorLoopUntil": {
-                String count = nodeElement.attributeValue("Count");
+                String count = nodeElement.attributeValue("count");
                 node = new LoopUntilNode<>(Integer.parseInt(count));
                 break;
             }
@@ -201,35 +211,33 @@ public class BehaviorTreeLoader {
                 break;
             }
             default:
-                throw new IllegalArgumentException("can't support node type : " + classType);
+                throw new IllegalArgumentException("未知节点类型 : " + classType);
         }
-        if (node != null) {
-            nodes.forEach(subNode -> {
-                if (subNode instanceof AttachmentNode) {
-                    node.addAttachment((AttachmentNode<T>) subNode);
-                } else if (subNode instanceof EventNode) {
-                    EventNode<T> eventNode = (EventNode<T>) subNode;
-                    node.addEvent(eventNode.getEvent(), eventNode);
-                } else {
-                    node.addChild(subNode);
-                }
-            });
-        }
-        if (node != null) {
-            String id = nodeElement.attributeValue("id");
-            node.setId(Integer.parseInt(id));
-            String traceInfo = nodeElement.attributeValue("trace");
-            node.setTraceInfo(traceInfo);
-        }
+
+        nodes.forEach(subNode -> {
+            if (subNode instanceof AttachmentNode) {
+                node.addAttachment((AttachmentNode<T>) subNode);
+            } else if (subNode instanceof EventNode<T> eventNode) {
+                node.addEvent(eventNode.getEvent(), eventNode);
+            } else {
+                node.addChild(subNode);
+            }
+        });
+        String id = nodeElement.attributeValue("id");
+        node.setId(Integer.parseInt(id));
+        String traceInfo = nodeElement.attributeValue("trace");
+        node.setTraceInfo(traceInfo);
         return node;
     }
 
-    private static <T> BTNode<T> loadAttachment(Element attachment, ScriptDefine script) {
+    private static <T> BTNode<T> loadAttachment(Element attachment) {
         String classType = attachment.attributeValue(ATTR_CLASS);
-
-        AttachmentNode<T> attachmentNode = (AttachmentNode<T>) script.getNode(Integer.parseInt(attachment.attributeValue("id")));
+        String clazzAttr = attachment.attributeValue("class");
+        BTNode<T> newNode = createNode(clazzAttr);
+        if (!(newNode instanceof AttachmentNode<T> attachmentNode)) {
+            throw new IllegalArgumentException("class配置错误, class=" + clazzAttr);
+        }
         Iterator<Element> it = attachment.elementIterator();
-
         while (it.hasNext()) {
             Element property = it.next();
             String phase = property.attributeValue("Phase");
@@ -262,12 +270,10 @@ public class BehaviorTreeLoader {
                 attachmentNode.setOperator(op);
             }
         }
-        if (attachmentNode != null) {
-            String id = attachment.attributeValue("id");
-            attachmentNode.setId(Integer.parseInt(id));
-            String traceInfo = attachment.attributeValue("trace");
-            attachmentNode.setTraceInfo(traceInfo);
-        }
+        String id = attachment.attributeValue("id");
+        attachmentNode.setId(Integer.parseInt(id));
+        String traceInfo = attachment.attributeValue("trace");
+        attachmentNode.setTraceInfo(traceInfo);
         return attachmentNode;
     }
 
@@ -283,26 +289,16 @@ public class BehaviorTreeLoader {
                     paramName.add(param.attributeValue("Name"));
                 }
             }
-
             if (element.attributeValue("ReferenceFilename") != null) {
                 referenceName = element.attributeValue("ReferenceFilename");
             }
             if (element.attributeValue("TriggerMode") != null) {
-                switch (element.attributeValue("TriggerMode")) {
-                    case "Transfer":
-                        triggerType = TriggerType.translateNode.type;
-                        break;
-                    case "Return":
-                        triggerType = TriggerType.returnNode.type;
-                        break;
-
-                    case "Event":
-                        triggerType = TriggerType.eventNode.type;
-                        break;
-
-                    default:
-                        throw new IllegalArgumentException("不支持的 event TriggerMode 类型");
-                }
+                triggerType = switch (element.attributeValue("TriggerMode")) {
+                    case "Transfer" -> TriggerType.translateNode.type;
+                    case "Return" -> TriggerType.returnNode.type;
+                    case "Event" -> TriggerType.eventNode.type;
+                    default -> throw new IllegalArgumentException("不支持的 event TriggerMode 类型");
+                };
 
             }
             if (element.attributeValue("TriggeredOnce") != null) {
@@ -316,5 +312,21 @@ public class BehaviorTreeLoader {
         eventNode.setEvent(eventKey);
         eventNode.getParamList().addAll(paramName);
         return eventNode;
+    }
+
+    private static <E> BTNode<E> createNode(String impl) {
+        BTNode<E> result = null;
+        try {
+            Class<?> clazz = Class.forName(impl);
+            Constructor<?> declaredConstructor = clazz.getDeclaredConstructor();
+            Object newInstance = declaredConstructor.newInstance();
+            if (newInstance instanceof BTNode) {
+                result = (BTNode<E>) newInstance;
+            }
+        } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException | InstantiationException |
+                 IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 }

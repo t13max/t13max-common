@@ -1,4 +1,4 @@
-package com.t13max.ai.behavior4j.data;
+package com.t13max.ai.behavior4j.utils;
 
 import com.t13max.ai.behavior4j.BehaviorTree;
 

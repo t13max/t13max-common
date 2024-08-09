@@ -3,7 +3,6 @@ package com.t13max.ai.behavior4j;
 import com.t13max.ai.behavior4j.attachments.AttachmentNode;
 import com.t13max.ai.behavior4j.event.EventNode;
 import com.t13max.ai.behavior4j.event.TriggerType;
-import com.t13max.ai.behavior4j.data.BehaviorTreeManager;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -27,31 +26,26 @@ public abstract class BTNode<E> {
     @Getter
     @Setter
     protected int id;
-
+    //节点状态
     protected Status status = Status.BT_FRESH;
-
+    //打断状态
     protected Status interruptStatus;
-
-    /*** 节点所属BT */
+    //节点所属行为树
     @Getter
     protected BehaviorTree<E> tree;
-
+    //父结点
     protected BTNode<E> parent;
-
-    /*** 附件*/
+    //附件
     protected List<AttachmentNode<E>> attachments = new ArrayList<>();
-
+    //事件节点
     @Getter
     protected Map<Integer, EventNode<E>> events = new HashMap<>();
-
+    //是否注册了事件
     @Setter
     private boolean register;
-
+    //
     private EventNode<E> translation;
-
-    @Getter
-    @Setter
-    protected String script;
+    //日志信息
     @Setter
     protected String traceInfo;
 
@@ -60,7 +54,6 @@ public abstract class BTNode<E> {
     }
 
     public final int addChild(BTNode<E> child) {
-
         return addChildToNode(child);
     }
 
@@ -75,7 +68,6 @@ public abstract class BTNode<E> {
         attachment.setNode(this);
     }
 
-
     public void setParent(BTNode<E> parent) {
         this.parent = parent;
         this.tree = parent.tree;
@@ -85,22 +77,19 @@ public abstract class BTNode<E> {
         return status;
     }
 
-    public E getAgent() {
+    public E getOwner() {
         if (tree == null)
-            throw new IllegalStateException("This node has never run");
-        return tree.getAgent();
+            throw new IllegalStateException("行为树为空");
+        return tree.getOwner();
     }
 
-    /**
-     * 节点更新逻辑
-     */
     protected abstract void run();
 
     public final void runWithGuard() {
         if (traceInfo != null)
-            log.debug("Running " + traceInfo);
+            log.debug("Running {}", traceInfo);
 
-        //node has been translate
+        //translate
         if (translation != null) {
             translation.setParent(this);
             translation.runWithGuard();
@@ -122,9 +111,9 @@ public abstract class BTNode<E> {
 
     public final void runWithOutGuard() {
         if (traceInfo != null)
-            log.debug("Start " + traceInfo);
+            log.debug("Start {}", traceInfo);
 
-        //node has been translate
+        //translate
         if (translation != null) {
             translation.setParent(this);
             translation.runWithOutGuard();
@@ -134,7 +123,6 @@ public abstract class BTNode<E> {
         run();
     }
 
-    /*** enter the node*/
     public boolean start() {
         interruptStatus = null;
 
@@ -144,7 +132,6 @@ public abstract class BTNode<E> {
     public void end() {
     }
 
-    /*** 节点执行running成功调用*/
     public final void onRunning() {
         status = Status.BT_RUNNING;
 
@@ -301,7 +288,7 @@ public abstract class BTNode<E> {
         eventNode.cleanup();
         eventNode.addEventParam(param);
         if (eventNode.getTriggerType() == TriggerType.eventNode.type) {
-            // handle event immediately
+            //处理事件节点
             eventNode.setParent(this);
             eventNode.start();
             eventNode.runWithOutGuard();
@@ -322,11 +309,8 @@ public abstract class BTNode<E> {
     @SuppressWarnings("unchecked")
     public BTNode<E> newInstance() {
         try {
-            BTNode<E> clone;
-            if (script != null)
-                clone = BehaviorTreeManager.getInstance().loadScript(script).getNode(id);
-            else
-                clone = this.getClass().getDeclaredConstructor().newInstance();
+            BTNode<E> clone = this.getClass().getDeclaredConstructor().newInstance();
+
             copy(clone);
 
             clone.attachments = attachments == null ? null : attachments.stream()
@@ -347,7 +331,6 @@ public abstract class BTNode<E> {
 
     protected void copy(BTNode<E> node) throws InvocationTargetException, IllegalAccessException {
         node.id = this.id;
-        node.script = this.script;
         node.traceInfo = this.traceInfo;
     }
 

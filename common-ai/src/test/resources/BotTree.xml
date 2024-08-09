@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<behavior name="TestBT">
+    <node class="Sequence" id="0">
+        <node class="Sequence" id="1">
+            <node class="Noop" id="3"/>
+            <node class="ActionNode" id="5" impl="service.tests.robot.behavior.action.TestAction"/>
+        </node>
+        <node class="Selector" id="2">
+            <node class="Not" id="6">
+                <node class="Noop" id="15"/>
+            </node>
+            <node class="Repeat" id="7" count="5" doneWithinFrame="false">
+                <node class="Noop" id="16"/>
+            </node>
+            <node class="UntilFailure" id="8">
+                <node class="Noop" id="17"/>
+            </node>
+            <node class="UntilSuccess" id="9">
+                <node class="Noop" id="18"/>
+            </node>
+            <node class="UntilSuccess" id="10">
+                <node class="Noop" id="19"/>
+            </node>
+            <node class="AlwaysFailure" id="11">
+                <node class="Noop" id="20"/>
+            </node>
+            <node class="AlwaysSuccess" id="13">
+                <node class="Noop" id="22"/>
+            </node>
+        </node>
+        <node class="RandomSelector" id="12">
+            <node class="Noop" id="21"/>
+        </node>
+        <node class="RandomSequence" id="25">
+            <node class="Noop" id="26"/>
+        </node>
+        <node class="ProbabilitySelector" id="27">
+            <node class="DecoratorWeight" id="28" weight="3">
+                <node class="Noop" id="29"/>
+            </node>
+            <node class="DecoratorWeight" id="30" weight="4">
+                <node class="Noop" id="31"/>
+            </node>
+        </node>
+        <node class="ReferencedBehavior" id="33" referenceBehavior="SubBT"/>
+        <node class="Selector" id="35">
+            <node class="Noop" id="36"/>
+            <node class="Sequence" id="37">
+                <node class="Noop" id="34"/>
+            </node>
+        </node>
+        <node class="Repeat" id="48" count="5" doneWithinFrame="false">
+            <node class="Noop" id="49"/>
+        </node>
+        <node class="DecoratorLoopUntil" id="50" count="-1">
+            <node class="Noop" id="51"/>
+        </node>
+        <node class="ConditionNode" id="38" impl="service.tests.robot.behavior.condition.TestCondition"/>
+        <node class="DecoratorCountLimit" id="45" count="-1">
+            <node class="Noop" id="46"/>
+        </node>
+        <node class="End" id="32" endOutside="true" endStatus="Success"/>
+    </node>
+</behavior>

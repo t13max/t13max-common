@@ -1,9 +1,7 @@
-package com.t13max.ai.behavior4j.data;
+package com.t13max.ai.behavior4j.utils;
 
 import com.t13max.ai.behavior4j.BTNode;
 import com.t13max.ai.behavior4j.BehaviorTree;
-import com.t13max.ai.behavior4j.plugins.ScriptDataSource;
-import groovy.lang.GroovyObject;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -32,17 +30,14 @@ public class BehaviorTreeManager {
 
     protected BehaviorTreeRepository repository;
 
-    private ScriptDataSource dataSource;
-
     private BehaviorTreeManager() {
         repository = new BehaviorTreeRepository();
     }
 
-    public void bindDataSource(ScriptDataSource dataSource, String BTPath) {
-        this.dataSource = dataSource;
+    public void bindDataPath(String BTPath) {
         this.path = BTPath;
         if (log.isInfoEnabled()) {
-            log.info("Bind behavior path : " + BTPath);
+            log.info("Bind behavior path : {}", BTPath);
         }
     }
 
@@ -58,24 +53,6 @@ public class BehaviorTreeManager {
         }
 
         return manager;
-    }
-
-    public ScriptDefine newScript(String name) {
-        ScriptDefine script = new ScriptDefine();
-        script.setPath(name);
-
-        return script;
-    }
-
-    public GroovyObject loadGroovy(String path) {
-        return dataSource.loadScript(path);
-    }
-
-    public ScriptDefine loadScript(String name) {
-        ScriptDefine script = new ScriptDefine(dataSource.loadScript(name));
-        script.setPath(name);
-
-        return script;
     }
 
     public void loadBehaviorTree(File treeFile) {
@@ -107,24 +84,9 @@ public class BehaviorTreeManager {
         });
         this.repository = newRepository;
         if (log.isInfoEnabled()) {
-            log.info("Behavior Tree Reload Complete！");
+            log.info("行为树重新加载完成！");
         }
     }
-
-//    public void reloadBehaviorTrees(String[] treeNames) {
-//        for (String name : treeNames) {
-//            repository.removeTrees(name);
-//        }
-//        for (String name : treeNames) {
-//            File file = new File(path + name + ".xml");
-//            if (!file.exists())
-//                return;
-//            loadTree2Repository(file, this.repository);
-//        }
-//        if (log.isInfoEnabled()) {
-//            log.info("Behavior Tree Reload Complete！");
-//        }
-//    }
 
     public <T> BTNode<T> createRootNode(String treeName) {
         BehaviorTree<T> behaviorTree = createBehaviorTree(treeName);
@@ -166,8 +128,7 @@ public class BehaviorTreeManager {
             }
 
             behaviorTree.setName(btName);
-            ScriptDefine script = BehaviorTreeManager.getInstance().newScript(path + btName + ".groovy");
-            List<BTNode<T>> rootNodes = BehaviorTreeLoader.loadElement(treeElement, script);
+            List<BTNode<T>> rootNodes = BehaviorTreeLoader.loadElement(treeElement);
             BTNode<T> rootNode = rootNodes.size() > 0 ? rootNodes.get(0) : null;
             behaviorTree.setRootNode(rootNode);
 
@@ -176,7 +137,7 @@ public class BehaviorTreeManager {
 
             repository.registerTree(behaviorTree.getName(), behaviorTree);
             if (log.isInfoEnabled()) {
-                log.info("Load behavior tree : {}",behaviorTree.getName());
+                log.info("加载行为树 : {}", behaviorTree.getName());
             }
         } catch (DocumentException e) {
 

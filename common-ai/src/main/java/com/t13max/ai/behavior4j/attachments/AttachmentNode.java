@@ -29,6 +29,7 @@ public abstract class AttachmentNode<E> extends BTNode<E> {
     public static final int PHASE_FAIL = 0x1000;
     public static final int PHASE_POST_EFFECT = 0x1100;
 
+    //当前阶段
     private int phase = PHASE_NONE;
 
     private BTNode<E> node;
@@ -50,7 +51,7 @@ public abstract class AttachmentNode<E> extends BTNode<E> {
 
     @Override
     protected int addChildToNode(BTNode<E> child) {
-        throw new IllegalStateException("A attachment node cannot have any children");
+        throw new IllegalStateException("附件节点不能添加子节点");
     }
 
     @Override
@@ -60,7 +61,7 @@ public abstract class AttachmentNode<E> extends BTNode<E> {
 
     @Override
     public BTNode<E> getChild(int i) {
-        throw new IndexOutOfBoundsException("A attachment can not have any child");
+        throw new IndexOutOfBoundsException("附件节点没有子节点");
     }
 
     @Override
@@ -76,8 +77,8 @@ public abstract class AttachmentNode<E> extends BTNode<E> {
     }
 
     @Override
-    public E getAgent() {
-        return node.getAgent();
+    public E getOwner() {
+        return node.getOwner();
     }
 
     @Override

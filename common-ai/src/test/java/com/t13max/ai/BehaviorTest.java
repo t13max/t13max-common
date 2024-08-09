@@ -2,8 +2,7 @@ package com.t13max.ai;
 
 import com.t13max.ai.agent.TestAgent;
 import com.t13max.ai.behavior4j.BehaviorTree;
-import com.t13max.ai.behavior4j.plugins.DefaultDataSource;
-import com.t13max.ai.behavior4j.data.BehaviorTreeManager;
+import com.t13max.ai.behavior4j.utils.BehaviorTreeManager;
 import org.junit.Test;
 
 import java.util.Objects;
@@ -16,9 +15,9 @@ public class BehaviorTest {
 
     @Test
     public void testLoadTree() {
-        BehaviorTreeManager.getInstance().bindDataSource(new DefaultDataSource(), Objects.requireNonNull(BehaviorTest.class.getClassLoader().getResource("")).getPath());
+        BehaviorTreeManager.getInstance().bindDataPath(Objects.requireNonNull(BehaviorTest.class.getClassLoader().getResource("")).getPath());
         BehaviorTree<TestAgent> behaviorTree = BehaviorTreeManager.getInstance().createBehaviorTree("TestBT");
-        behaviorTree.setAgent(new TestAgent());
+        behaviorTree.setOwner(new TestAgent());
         behaviorTree.update();
     }
 

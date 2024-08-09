@@ -1,8 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--EXPORTED BY TOOL, DON'T MODIFY IT!-->
-<!--Source File: SubBT.xml-->
-<behavior name="SubBT" agenttype="TestAgent" version="5">
-  <node class="Sequence" id="1">
-    <node class="Noop" id="0" />
-  </node>
+<behavior name="SubBT">
+    <node class="ActionNode" id="5" impl="service.tests.robot.behavior.action.TestAction" />
 </behavior>

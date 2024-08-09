@@ -8,8 +8,7 @@ import com.t13max.ai.behavior4j.attachments.AttachmentNode;
 import com.t13max.ai.behavior4j.composites.SelectorNode;
 import com.t13max.ai.behavior4j.composites.SequenceNode;
 import com.t13max.ai.behavior4j.leaf.EndNode;
-import com.t13max.ai.behavior4j.plugins.DefaultDataSource;
-import com.t13max.ai.behavior4j.data.BehaviorTreeManager;
+import com.t13max.ai.behavior4j.utils.BehaviorTreeManager;
 import com.t13max.ai.nodes.TestExecuteNode;
 import com.t13max.ai.nodes.TestPreconditionFail;
 import junit.framework.Assert;
@@ -31,10 +30,7 @@ public class NodeTest {
 
     @Before
     public void preTest() {
-        BehaviorTreeManager
-                .getInstance()
-                .bindDataSource(new DefaultDataSource(), Objects.requireNonNull(BehaviorTest.class.getClassLoader().getResource("")).getPath());
-        behaviorTree.setAgent(new TestAgent());
+        behaviorTree.setOwner(new TestAgent());
     }
 
     @Test
