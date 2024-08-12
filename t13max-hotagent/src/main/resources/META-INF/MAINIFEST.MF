@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Ant-Version: Apache Ant 1.10.7
+Created-By: 1.6.0_45-b06 (Sun Microsystems Inc.)
+Premain-Class: com.t13max.agent.HotAgent
+Agent-Class: com.t13max.agent.HotAgent
+Can-Redefine-Classes: true
+

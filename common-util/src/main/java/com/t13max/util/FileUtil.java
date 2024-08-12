@@ -1,11 +1,11 @@
 package com.t13max.util;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.jar.JarOutputStream;
+import java.util.zip.ZipEntry;
 
 /**
  * 文件工具类
@@ -154,6 +154,41 @@ public class FileUtil {
     }
 
     /**
+     * 删除文件夹
+     *
+     * @Author t13max
+     * @Date 16:11 2024/8/12
+     */
+    public static boolean deleteDir(String dir) {
+        Path folderPath = Paths.get(dir);
+        if (!Files.exists(folderPath) && !Files.isDirectory(folderPath)) {
+            return false;
+        }
+        try {
+            Files.walkFileTree(folderPath, new SimpleFileVisitor<>() {
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                    Files.delete(file);
+                    return FileVisitResult.CONTINUE;
+                }
+
+                @Override
+                public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                    if (!dir.equals(folderPath)) {
+                        Files.delete(dir);
+                    }
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * 文件为excel文件
      *
      * @Author t13max
@@ -193,4 +228,95 @@ public class FileUtil {
         }
         return path;
     }
+
+    /**
+     * 导出 Jar
+     *
+     * @Author t13max
+     * @Date 18:33 2024/8/12
+     */
+    public static void toJar(String jarFilepath, OutputStream out, boolean keepDirStructure) throws Exception {
+        JarOutputStream jos = null;
+        var sourceFile = new File(jarFilepath);
+        try {
+            jos = new JarOutputStream(out);
+            compress(sourceFile, jos, sourceFile.getName(), keepDirStructure);
+        } finally {
+            if (jos != null) {
+                try {
+                    jos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private static final int BUFFER_SIZE = 2 * 1024;
+
+    /**
+     * 递归压缩
+     *
+     * @Author t13max
+     * @Date 18:34 2024/8/12
+     */
+    public static void compress(File sourceFile, JarOutputStream jos, String name, boolean keepDirStructure) throws Exception {
+        var buf = new byte[BUFFER_SIZE];
+        if (sourceFile.isFile()) {
+            // 向jar输出流中添加一个jar实体，构造器中name为jar实体的文件的名字
+            jos.putNextEntry(new ZipEntry(name));
+            // copy文件到jos输出流中
+            int len;
+            var in = new FileInputStream(sourceFile);
+            while ((len = in.read(buf)) != -1) {
+                jos.write(buf, 0, len);
+            }
+            // Complete the entry
+            jos.closeEntry();
+            in.close();
+        } else {
+            var listFiles = sourceFile.listFiles();
+            if (listFiles == null || listFiles.length == 0) {
+                // 需要保留原来的文件结构时,需要对空文件夹进行处理
+                if (keepDirStructure) {
+                    // 空文件夹的处理
+                    jos.putNextEntry(new ZipEntry(name + "/"));
+                    // 没有文件，不需要文件的copy
+                    jos.closeEntry();
+                }
+            } else {
+                for (File file : listFiles) {
+                    // 判断是否需要保留原来的文件结构
+                    // 注意：file.getName()前面需要带上父文件夹的名字加一斜杠,
+                    // 不然最后压缩包中就不能保留原来的文件结构,即：所有文件都跑到压缩包根目录下了
+                    compress(file, jos, (keepDirStructure ? name + "/" : "") + file.getName(), true);
+                }
+            }
+        }
+    }
+
+    /**
+     * 复制 Class 文件
+     *
+     * @Author t13max
+     * @Date 18:35 2024/8/12
+     */
+    public static void copyClazzFile(File exportFolder, Class<?> clazz) throws Exception {
+        var clazzBasePath = ClassUtil.getClazzAbsPath(clazz);
+        var packageDir = clazz.getPackage().getName().replace('.', '/');
+        var name = clazz.getName().substring(clazz.getName().lastIndexOf(".") + 1);
+
+        var clazzSourceFile = new File(clazzBasePath + '/' + packageDir + '/' + name + ".class");
+        var clazzCopyFile = new File(exportFolder.getAbsolutePath() + '/' + packageDir + '/' + name + ".class");
+        if (!clazzCopyFile.getParentFile().exists() && !clazzCopyFile.getParentFile().mkdirs()) {
+            throw new Exception("Class copy target path create failed. file = " + clazzCopyFile.getAbsolutePath());
+        }
+
+        if (!clazzCopyFile.createNewFile()) {
+            throw new Exception("Class copy target file create failed. file = " + clazzCopyFile.getAbsolutePath());
+        }
+
+        Files.copy(clazzSourceFile.toPath(), clazzCopyFile.toPath());
+    }
+
 }
