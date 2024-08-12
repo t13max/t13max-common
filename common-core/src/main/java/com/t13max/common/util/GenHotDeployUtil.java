@@ -8,9 +8,10 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.Collectors;
 
 /**
- * @Author yanisChen
- * @Date 2022/11/30 1:43
- * @Description 打包热更新类工具
+ * 打包热更新类工具
+ *
+ * @Author t13max
+ * @Date 18:48 2024/8/12
  */
 public class GenHotDeployUtil {
 
