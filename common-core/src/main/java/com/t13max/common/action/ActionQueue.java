@@ -10,9 +10,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ActionQueue {
 
-    private ActionExecutor executor;
-    private ConcurrentLinkedQueue<Runnable> queue;
-    private AtomicBoolean isRunning;
+    private final ActionExecutor executor;
+    private final ConcurrentLinkedQueue<Runnable> queue;
+    private final AtomicBoolean isRunning;
 
     public ActionQueue(ActionExecutor executor) {
         this.executor = executor;

@@ -8,6 +8,7 @@ import java.util.List;
  * @since: 15:43 2024/8/12
  */
 public class HotDeployHotDeployer extends HotDeployer{
+
     public HotDeployHotDeployer(Result var1, Instrumentation var2) {
         super(var1, var2);
     }

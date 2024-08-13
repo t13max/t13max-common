@@ -8,7 +8,6 @@ import java.lang.instrument.Instrumentation;
  */
 public class HotAgentHotDeployer extends HotDeployer {
 
-
     public HotAgentHotDeployer(Result var1, Instrumentation var2) {
         super(var1, var2);
     }

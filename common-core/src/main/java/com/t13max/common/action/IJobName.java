@@ -9,12 +9,7 @@ package com.t13max.common.action;
  */
 public interface IJobName {
 
-    public static IJobName DEF = new IJobName() {
-        @Override
-        public String getJobName() {
-            return "def";
-        }
-    };
+    IJobName DEF = () -> "def";
 
     String getJobName();
 }

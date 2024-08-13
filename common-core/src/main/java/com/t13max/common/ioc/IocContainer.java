@@ -18,8 +18,8 @@ import java.util.*;
  */
 public class IocContainer {
 
-    private static Map<String, Object> objectMap = new HashMap<>();
-    private static Map<String, Object> preObjectMap = new HashMap<>();
+    private static final Map<String, Object> objectMap = new HashMap<>();
+    private static final Map<String, Object> preObjectMap = new HashMap<>();
 
     static {
         try {
@@ -67,7 +67,7 @@ public class IocContainer {
                 Class<?> fieldClazz = declaredField.getType();
                 Component component = fieldClazz.getAnnotation(Component.class);
                 if (component == null) {
-                    throw new CommonException("自动注入的字段找不到对象");
+                    throw new CommonException("自动注入的字段找不到对象" + fieldClazz.getName() + "::" + fieldClazz.getName());
                 }
                 Object fieldObject = objectMap.get(fieldClazz.getName());
                 if (fieldObject == null) {
@@ -77,14 +77,14 @@ public class IocContainer {
                     fieldObject = createBean(fieldClazz);
                 }
                 if (fieldObject == null) {
-                    throw new RuntimeException();
+                    throw new CommonException("创建对象失败" + fieldClazz.getName());
                 }
                 declaredField.set(object, fieldObject);
             }
             preObjectMap.remove(clazz.getName());
             objectMap.put(clazz.getName(), object);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new CommonException(e);
         }
         return object;
     }

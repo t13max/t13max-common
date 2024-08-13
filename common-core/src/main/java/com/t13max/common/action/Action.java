@@ -11,9 +11,6 @@ public abstract class Action implements Runnable {
     protected ActionQueue queue;
     protected IJobName name;
     protected long createTime;
-    @Setter
-    private Class msg = Object.class;
-
 
     public Action(ActionQueue queue, IJobName name) {
         this.queue = queue;
