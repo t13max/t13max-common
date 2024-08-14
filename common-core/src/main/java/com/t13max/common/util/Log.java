@@ -13,4 +13,5 @@ public class Log {
     //玩家业务线程池
     public static Logger action = LogManager.getLogger("ACTION");
     public static Logger manager = LogManager.getLogger("MANAGER");
+    public static Logger msg = LogManager.getLogger("MESSAGE");
 }

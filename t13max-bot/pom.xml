@@ -9,6 +9,7 @@
 
     <name>t13max-bot</name>
     <url>http://maven.apache.org</url>
+    <artifactId>t13max-bot</artifactId>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
