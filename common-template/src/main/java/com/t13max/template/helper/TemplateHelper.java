@@ -18,9 +18,9 @@ public abstract class TemplateHelper<T extends ITemplate> {
 
     protected String fileName;
 
-    protected Map<Integer, T> DATA_MAP;
+    protected volatile Map<Integer, T> DATA_MAP;
 
-    protected Map<Integer, T> TEMP_DATA_MAP;
+    protected volatile Map<Integer, T> TEMP_DATA_MAP;
 
     public TemplateHelper(String fileName) {
         this.fileName = fileName;
