@@ -4,10 +4,12 @@ package com.t13max.ai.fsm;
 import com.t13max.ai.Blackboard;
 
 /**
+ * 默认实现
+ *
  * @Author t13max
  * @Date 13:50 2024/5/23
  */
-public class StateMachineDefault<T, S extends State<T, P>, P> implements StateMachine<T, S> {
+public class DefaultStateMachine<T, S extends IState<T>> implements StateMachine<T, S> {
 
     private boolean active;
 
@@ -19,41 +21,29 @@ public class StateMachineDefault<T, S extends State<T, P>, P> implements StateMa
 
     protected S lastState;
 
-    protected P stateParam;
 
     protected Blackboard blackboard;
 
-    StateMachineDefault() {
+    DefaultStateMachine() {
         active = false;
         blackboard = new Blackboard();
     }
 
-    public StateMachineDefault(T owner, S initState) {
+    public DefaultStateMachine(T owner, S initState) {
         this();
         initialState(owner, initState);
     }
 
-    public StateMachineDefault(T owner, S initState, S globalState) {
+    public DefaultStateMachine(T owner, S initState, S globalState) {
         this();
         initialState(owner, initState, globalState);
-    }
-
-    public StateMachineDefault(T owner, S initState, S globalState, P stateParam) {
-        this();
-        initialState(owner, initState, globalState);
-        this.stateParam = stateParam;
     }
 
     @Override
     public void startup() {
         active = true;
         if (currentState != null)
-            currentState.enter(owner, stateParam);
-    }
-
-    public void startup(P stateParam) {
-        this.stateParam = stateParam;
-        startup();
+            currentState.enter(owner);
     }
 
     @Override
@@ -69,10 +59,10 @@ public class StateMachineDefault<T, S extends State<T, P>, P> implements StateMa
         blackboard.update();
 
         if (globalState != null)
-            globalState.update(owner, stateParam);
+            globalState.update(owner);
 
         if (currentState != null)
-            currentState.update(owner, stateParam);
+            currentState.update(owner);
     }
 
     @Override
@@ -83,9 +73,9 @@ public class StateMachineDefault<T, S extends State<T, P>, P> implements StateMa
             return;
         this.lastState = this.currentState;
         if (this.currentState != null)
-            this.currentState.exit(owner, stateParam);
+            this.currentState.exit(owner);
         this.currentState = state;
-        this.currentState.enter(owner, stateParam);
+        this.currentState.enter(owner);
     }
 
     @Override
@@ -123,11 +113,11 @@ public class StateMachineDefault<T, S extends State<T, P>, P> implements StateMa
 
     @Override
     public boolean handleEvent(StateEvent event) {
-        if (currentState != null && currentState.onEvent(owner, stateParam, event)) {
+        if (currentState != null && currentState.onEvent(owner, event)) {
             return true;
         }
 
-        return globalState != null && globalState.onEvent(owner, stateParam, event);
+        return globalState != null && globalState.onEvent(owner, event);
 
     }
 
@@ -136,7 +126,4 @@ public class StateMachineDefault<T, S extends State<T, P>, P> implements StateMa
         return blackboard;
     }
 
-    public P getStateParam() {
-        return this.stateParam;
-    }
 }

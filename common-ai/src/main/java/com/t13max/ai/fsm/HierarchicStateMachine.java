@@ -9,11 +9,11 @@ import java.util.Map;
  * @Author t13max
  * @Date 13:50 2024/5/23
  */
-public class StateMachineHierarchic<T, S extends State<T, StateParam<T>>> extends StateMachineSimple<T, S> {
+public class HierarchicStateMachine<T, S extends IState<T>> extends SimpleStateMachine<T, S> {
 
-    private Map<EState<T>, S> topStates = new HashMap<>();
+    private final Map<EState<T>, S> topStates = new HashMap<>();
 
-    StateMachineHierarchic() {
+    HierarchicStateMachine() {
         super();
     }
 
@@ -40,9 +40,9 @@ public class StateMachineHierarchic<T, S extends State<T, StateParam<T>>> extend
         if (state != null) {
             this.lastState = this.currentState;
             if (this.currentState != null)
-                this.currentState.exit(owner, stateParam);
+                this.currentState.exit(owner);
             this.currentState = state;
-            this.currentState.enter(owner, stateParam);
+            this.currentState.enter(owner);
         }
     }
 
@@ -71,7 +71,7 @@ public class StateMachineHierarchic<T, S extends State<T, StateParam<T>>> extend
             return false;
         }
         if (this.lastState == currentState)
-            return currentState.onEvent(owner, stateParam, StateEvent.REVERT_STATE);
+            return currentState.onEvent(owner, StateEvent.REVERT_STATE);
 
         changeState(lastState);
 

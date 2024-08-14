@@ -30,18 +30,12 @@ public class RandomUtil {
             return true;
         }
         return getRanNumByIntervalDouble(0, 100) < num;
-
-//        double r = ThreadLocalRandom.current().nextDouble() * 100;
-//        if (r < num) {
-//            return true;
-//        }
-//        return false;
     }
 
     /**
      * 给一个区间，返回一个中间一个随机数 包含min,max
      */
-    public static int getRanNumByInterval(int min, int max) {
+    public static int nextInt(int min, int max) {
         if (min == max) {
             return min;
         }
@@ -53,12 +47,11 @@ public class RandomUtil {
         return (int) (ThreadLocalRandom.current().nextDouble() * (max - min + 1)) + min;
     }
 
-    public static int getRanNumByInterval(int max) {
-        return getRanNumByInterval(0, max);
+    public static int nextInt(int max) {
+        return nextInt(0, max);
     }
 
-
-    public static long getRanNumByInterval(long min, long max) {
+    public static long nextInt(long min, long max) {
         if (min == max) {
             return min;
         }
@@ -90,9 +83,6 @@ public class RandomUtil {
      */
     public static Set<Integer> getRanListByInterval(int min, int max, int n) {
         Set<Integer> list = new HashSet<>();
-//        if (max - min < n) {
-//            return list;
-//        }
         n = Math.min(n, max - min + 1);
         for (int i = 0; i < n; i++) {
             if (list.size() == n) {
@@ -123,7 +113,7 @@ public class RandomUtil {
             }
             total += num;
         }
-        int randNum = getRanNumByInterval(1, total);
+        int randNum = nextInt(1, total);
         int index = 0;
         total = 0;
         for (int k = 0; k < weight.length; k++) {
@@ -151,6 +141,18 @@ public class RandomUtil {
         return list.get(index);
     }
 
+    public static <T> T random(T[] array, Function<T, Integer> function) {
+        if (array == null || array.length == 0) {
+            return null;
+        }
+        int[] weights = new int[array.length];
+        for (int i = 0; i < array.length; i++) {
+            weights[i] = function.apply(array[i]);
+        }
+        int index = randomIndexByWeight(weights);
+        return array[index];
+    }
+
     /**
      * 根据权重随机N个
      */
@@ -174,8 +176,17 @@ public class RandomUtil {
         if (list == null || list.isEmpty()) {
             return null;
         }
-        int index = getRanNumByInterval(list.size() - 1);
+        int index = nextInt(list.size() - 1);
         return list.get(index);
+    }
+
+    public static <T> List<T> random(T[] array, int num) {
+        Set<T> result = new HashSet<>();
+        while (result.size() != num) {
+            int index = RandomUtil.nextInt(array.length);
+            result.add(array[index]);
+        }
+        return new ArrayList<>(result);
     }
 
     public static <T> List<T> random(List<T> list, int num) {
@@ -184,7 +195,7 @@ public class RandomUtil {
         }
         Set<T> result = new HashSet<>();
         while (result.size() < num) {
-            int index = getRanNumByInterval(list.size() - 1);
+            int index = nextInt(list.size() - 1);
             result.add(list.get(index));
         }
         return new LinkedList<>(result);
@@ -203,7 +214,7 @@ public class RandomUtil {
             probabilitylist.add(max);
         }
 
-        int ranNumByInterval = RandomUtil.getRanNumByInterval(1, max);
+        int ranNumByInterval = RandomUtil.nextInt(1, max);
         for (int x = 0; x < probabilitylist.size(); x++) {
             if (probabilitylist.get(x) >= ranNumByInterval) {
                 return idlist.get(x);
@@ -224,7 +235,7 @@ public class RandomUtil {
             max = Integer.parseInt(split1[1]) + max;//权重值
             probabilitylist.add(max);
         }
-        int ranNumByInterval = RandomUtil.getRanNumByInterval(1, max);
+        int ranNumByInterval = RandomUtil.nextInt(1, max);
         for (int x = 0; x < probabilitylist.size(); x++) {
             if (probabilitylist.get(x) >= ranNumByInterval) {
                 return idlist.get(x);
@@ -251,13 +262,6 @@ public class RandomUtil {
             }
             randomIds.add(attributeId);
         }
-
-//        if (num != numInit) {
-//            System.err.println("===num - numInit:" + (num - numInit) + "===============");
-//        }
-//        if (num - numInit >= 10) {
-//            System.err.println("-------------" + (num - numInit) + "-----------------");
-//        }
         return randomIds;
     }
 
@@ -322,7 +326,6 @@ public class RandomUtil {
 
         return idList;
     }
-
 
     public static void main(String[] args) {
         Set<Integer> ids = random("1;2;3;5;6;", 3, ";");
