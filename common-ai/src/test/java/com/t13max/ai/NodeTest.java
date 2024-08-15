@@ -1,14 +1,13 @@
 package com.t13max.ai;
 
 import com.t13max.ai.agent.TestAgent;
-import com.t13max.ai.behavior4j.BTNode;
-import com.t13max.ai.behavior4j.BTNode.Status;
-import com.t13max.ai.behavior4j.BehaviorTree;
-import com.t13max.ai.behavior4j.attachments.AttachmentNode;
-import com.t13max.ai.behavior4j.composites.SelectorNode;
-import com.t13max.ai.behavior4j.composites.SequenceNode;
-import com.t13max.ai.behavior4j.leaf.EndNode;
-import com.t13max.ai.behavior4j.utils.BehaviorTreeManager;
+import com.t13max.ai.btree.BTNode;
+import com.t13max.ai.btree.BTNode.Status;
+import com.t13max.ai.btree.BehaviorTree;
+import com.t13max.ai.btree.attachments.AttachmentNode;
+import com.t13max.ai.btree.composites.SelectorNode;
+import com.t13max.ai.btree.composites.SequenceNode;
+import com.t13max.ai.btree.leaf.EndNode;
 import com.t13max.ai.nodes.TestExecuteNode;
 import com.t13max.ai.nodes.TestPreconditionFail;
 import junit.framework.Assert;
@@ -17,7 +16,6 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @Author t13max

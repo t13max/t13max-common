@@ -1,10 +1,10 @@
 package com.t13max.ai;
 
-import com.t13max.ai.behavior4j.BTNode;
-import com.t13max.ai.behavior4j.BehaviorTree;
-import com.t13max.ai.behavior4j.composites.ParallelNode;
-import com.t13max.ai.behavior4j.composites.ParallelNode.Coordinator;
-import com.t13max.ai.behavior4j.composites.ParallelNode.Policy;
+import com.t13max.ai.btree.BTNode;
+import com.t13max.ai.btree.BehaviorTree;
+import com.t13max.ai.btree.composites.ParallelNode;
+import com.t13max.ai.btree.composites.ParallelNode.Coordinator;
+import com.t13max.ai.btree.composites.ParallelNode.Policy;
 import com.t13max.ai.nodes.TestExecuteNode;
 import junit.framework.Assert;
 import org.junit.Before;

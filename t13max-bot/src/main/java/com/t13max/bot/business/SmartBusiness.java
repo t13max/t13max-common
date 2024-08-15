@@ -1,8 +1,8 @@
 package com.t13max.bot.business;
 
 
-import com.t13max.ai.behavior4j.BehaviorTree;
-import com.t13max.ai.behavior4j.utils.BehaviorTreeManager;
+import com.t13max.ai.btree.BehaviorTree;
+import com.t13max.ai.btree.utils.BehaviorTreeManager;
 import com.t13max.ai.fsm.DefaultStateMachine;
 import com.t13max.bot.robot.SmartRobot;
 import com.t13max.bot.state.EmptyState;

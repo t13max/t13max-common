@@ -1,7 +1,7 @@
 package com.t13max.ai.nodes;
 
 
-import com.t13max.ai.behavior4j.attachments.PreActionNode;
+import com.t13max.ai.btree.attachments.PreActionNode;
 
 /**
  * @Author t13max

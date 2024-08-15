@@ -1,6 +1,6 @@
 package com.t13max.ai.nodes;
 
-import com.t13max.ai.behavior4j.leaf.ActionNode;
+import com.t13max.ai.btree.leaf.ActionNode;
 import lombok.Getter;
 import lombok.Setter;
 
