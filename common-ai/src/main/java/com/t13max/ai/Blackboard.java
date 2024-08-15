@@ -11,13 +11,14 @@ import java.util.function.BiFunction;
  * @Date 13:50 2024/5/23
  */
 public class Blackboard {
+
     private boolean isUpdating;
 
-    private Map<String, BlackboardParam> paramMap = new HashMap<>();
+    private final Map<String, BlackboardParam> paramMap = new HashMap<>();
 
-    private Set<String> removeParams = new HashSet<>();
+    private final Set<String> removeParams = new HashSet<>();
 
-    private Map<String, BlackboardParam> addParams = new HashMap<>();
+    private final Map<String, BlackboardParam> addParams = new HashMap<>();
 
     public void update() {
 
@@ -33,7 +34,7 @@ public class Blackboard {
 
         this.isUpdating = false;
         if (!addParams.isEmpty()) {
-            addParams.forEach(paramMap::put);
+            paramMap.putAll(addParams);
             addParams.clear();
         }
         if (!removeParams.isEmpty()) {

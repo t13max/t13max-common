@@ -21,7 +21,6 @@ public class DefaultStateMachine<T, S extends IState<T>> implements StateMachine
 
     protected S lastState;
 
-
     protected Blackboard blackboard;
 
     DefaultStateMachine() {

@@ -8,6 +8,7 @@ package com.t13max.ai;
  * @Date 13:50 2024/5/23
  */
 public abstract class BlackboardParam {
+
     protected Object value;
 
     abstract void update();
