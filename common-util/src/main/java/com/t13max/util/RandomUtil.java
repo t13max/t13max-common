@@ -265,7 +265,6 @@ public class RandomUtil {
         return randomIds;
     }
 
-
     // 随机num个不重复元素[元素数量小于num, 则使用当前所有元素集合即可]
     public Set<Integer> random(String str, int resultNum) {
         return random(str, resultNum, COMMA);
@@ -279,7 +278,7 @@ public class RandomUtil {
 
         List<Integer> list = new LinkedList<>();
         if (splitStr.equals(COMMA)) {
-            list = decodeToIntList(str);
+            list = StringUtil.getIntList(str);
         }
 
         if (resultNum >= list.size()) {
@@ -293,45 +292,6 @@ public class RandomUtil {
         }
 
         return result;
-    }
-
-    private List<Integer> decodeToIntList(String str) {
-        List<Integer> list = new LinkedList<>();
-        String[] split = str.split(",");
-        for (String s : split) {
-            list.add(Integer.parseInt(s));
-        }
-        return list;
-    }
-
-    // 随机num个不重复元素 -- 优先不重复元素, 如果分隔出来的元素数量不足则再次随机出不足的那几个重复的元素
-    public static List<Integer> randomSplitStrByNum(String idStr, int num, String splitStr) {
-
-        Set<Integer> allIds = RandomUtil.random(idStr, num, splitStr);
-        if (allIds == null || allIds.isEmpty()) {
-            return Collections.EMPTY_LIST;
-        }
-
-        List<Integer> idList = new ArrayList<>();
-
-        // 随机出来的id数量不够
-        int lackNum = num - idList.size();
-        if (lackNum > 0) {
-            for (int i = 0; i < lackNum; i++) {
-                int randomId = RandomUtil.random(idList);
-
-                idList.add(randomId);
-            }
-        }
-
-        return idList;
-    }
-
-    public static void main(String[] args) {
-        Set<Integer> ids = random("1;2;3;5;6;", 3, ";");
-        for (int id : ids) {
-            System.err.println(id);
-        }
     }
 
 }
