@@ -1,4 +1,4 @@
-package com.t13max.ai;
+package com.t13max.util.func;
 
 /**
  * @Author t13max

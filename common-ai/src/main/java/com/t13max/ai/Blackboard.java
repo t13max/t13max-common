@@ -1,6 +1,8 @@
 package com.t13max.ai;
 
 
+import com.t13max.util.func.Applier;
+
 import java.util.*;
 import java.util.function.BiFunction;
 

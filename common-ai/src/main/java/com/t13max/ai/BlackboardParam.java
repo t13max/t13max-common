@@ -1,12 +1,18 @@
 package com.t13max.ai;
 
 
+import com.t13max.util.func.Applier;
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * 黑板共享数据
  *
  * @Author t13max
  * @Date 13:50 2024/5/23
  */
+@Setter
+@Getter
 public abstract class BlackboardParam {
 
     protected Object value;
@@ -14,14 +20,6 @@ public abstract class BlackboardParam {
     abstract void update();
 
     abstract boolean isExpired();
-
-    public void setValue(Object value) {
-        this.value = value;
-    }
-
-    public Object getValue() {
-        return value;
-    }
 
     static class TimeBlackBoardParam extends BlackboardParam {
 

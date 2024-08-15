@@ -1,11 +1,9 @@
 package com.t13max.bot.state;
 
-import com.t13max.ai.Applier;
 import com.t13max.common.exception.CommonException;
 import com.t13max.common.manager.ManagerBase;
 import com.t13max.util.PackageUtil;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
