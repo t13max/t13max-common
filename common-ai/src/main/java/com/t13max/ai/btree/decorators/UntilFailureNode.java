@@ -14,6 +14,10 @@ public class UntilFailureNode<E> extends LoopDecoratorNode<E> {
     public UntilFailureNode() {
     }
 
+    public UntilFailureNode(boolean frame) {
+        super(frame);
+    }
+
     public UntilFailureNode(BTNode<E> node) {
         super(node);
     }

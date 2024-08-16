@@ -14,6 +14,10 @@ public class UntilSuccessNode<E> extends LoopDecoratorNode<E> {
     public UntilSuccessNode() {
     }
 
+    public UntilSuccessNode(boolean frame) {
+        super(frame);
+    }
+
     public UntilSuccessNode(BTNode<E> node) {
         super(node);
     }

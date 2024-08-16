@@ -54,6 +54,7 @@ public abstract class LoopDecoratorNode<E> extends Decorator<E> {
             }
             onSuccess();
         } else {
+            //这里是不是死循环了... 有空看看
             if (condition()) {
                 if (child.getStatus() == Status.BT_RUNNING) {
                     child.runWithGuard();
