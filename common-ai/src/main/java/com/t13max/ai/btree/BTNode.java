@@ -83,8 +83,21 @@ public abstract class BTNode<E> {
         return tree.getOwner();
     }
 
+
+    /**
+     * 执行节点
+     *
+     * @Author t13max
+     * @Date 17:53 2024/8/15
+     */
     protected abstract void run();
 
+    /**
+     * 运行 并且监测执行附件
+     *
+     * @Author t13max
+     * @Date 17:53 2024/8/15
+     */
     public final void runWithGuard() {
         if (traceInfo != null)
             log.debug("Running {}", traceInfo);
@@ -109,6 +122,12 @@ public abstract class BTNode<E> {
         }
     }
 
+    /**
+     * 运行 并且忽略附件
+     *
+     * @Author t13max
+     * @Date 17:53 2024/8/15
+     */
     public final void runWithOutGuard() {
         if (traceInfo != null)
             log.debug("Start {}", traceInfo);
@@ -123,15 +142,35 @@ public abstract class BTNode<E> {
         run();
     }
 
+    /**
+     * 节点start(但是还没运行)
+     * 运行前被调用一次
+     * 根据节点Check一下附件
+     *
+     * @Author t13max
+     * @Date 17:55 2024/8/15
+     */
     public boolean start() {
         interruptStatus = null;
 
         return predicate(AttachmentNode.PHASE_START);
     }
 
+    /**
+     * 节点 运行完返回前调用
+     *
+     * @Author t13max
+     * @Date 17:58 2024/8/15
+     */
     public void end() {
     }
 
+    /**
+     * 节点执行返回Running调用
+     *
+     * @Author t13max
+     * @Date 18:11 2024/8/15
+     */
     public final void onRunning() {
         status = Status.BT_RUNNING;
 
@@ -183,7 +222,8 @@ public abstract class BTNode<E> {
     }
 
     /**
-     * 打断
+     * 当前节点被打断
+     * 可能是子节点打断后向上传递 也可能是执行结果为取消
      *
      * @Author t13max
      * @Date 15:57 2024/5/17
@@ -239,8 +279,20 @@ public abstract class BTNode<E> {
      */
     public abstract void childFail(BTNode<E> node);
 
+    /**
+     * 当子节点执行Running时调用
+     *
+     * @Author t13max
+     * @Date 18:12 2024/8/15
+     */
     public abstract void childRunning(BTNode<E> runningNode, BTNode<E> reporter);
 
+    /**
+     * 当子节点执行被打断时调用
+     *
+     * @Author t13max
+     * @Date 18:12 2024/8/15
+     */
     public void childInterrupt(BTNode<E> node) {
         onInterrupt();
     }
