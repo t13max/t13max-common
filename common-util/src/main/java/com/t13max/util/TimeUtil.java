@@ -105,7 +105,7 @@ public class TimeUtil {
      * @Author t13max
      * @Date 15:51 2024/8/19
      */
-    public static long nowSeconds() {
+    public static int nowSeconds() {
         return (int) (System.currentTimeMillis() / SEC);
     }
 
