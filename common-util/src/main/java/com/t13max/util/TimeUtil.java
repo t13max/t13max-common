@@ -18,10 +18,6 @@ public class TimeUtil {
 
     public int SECOND = 1000;
 
-    public long nowMills() {
-        return System.currentTimeMillis();
-    }
-
     /**
      * 地区id， 默认服务器时区，如果有需要后续可以通过配置设置
      */
@@ -92,6 +88,26 @@ public class TimeUtil {
      * 时区偏移时间
      */
     public static final int TIME_ZONE_OFFSET = TimeZone.getTimeZone(ZONE_ID).getRawOffset();
+
+    /**
+     * 获取当前毫秒时间戳
+     *
+     * @Author t13max
+     * @Date 15:51 2024/8/19
+     */
+    public static long nowMills() {
+        return System.currentTimeMillis();
+    }
+
+    /**
+     * 获取当前时间秒值
+     *
+     * @Author t13max
+     * @Date 15:51 2024/8/19
+     */
+    public static long nowSeconds() {
+        return (int) (System.currentTimeMillis() / SEC);
+    }
 
     /**
      * 格式化时间戳，格式为(yyyy-MM-dd HH:mm:ss)
