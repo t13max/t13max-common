@@ -155,7 +155,7 @@ public abstract class ManagerBase implements Comparable<ManagerBase> {
         return Collections.emptyList();
     }
 
-    public void init() {
+    protected void init() {
 
     }
 
