@@ -180,10 +180,18 @@ public class RandomUtil {
         return list.get(index);
     }
 
+    public static <T> T random(T[] array) {
+        if (array == null || array.length == 0) {
+            return null;
+        }
+        int index = nextInt(array.length - 1);
+        return array[index];
+    }
+
     public static <T> List<T> random(T[] array, int num) {
         Set<T> result = new HashSet<>();
         while (result.size() != num) {
-            int index = RandomUtil.nextInt(array.length);
+            int index = RandomUtil.nextInt(array.length - 1);
             result.add(array[index]);
         }
         return new ArrayList<>(result);
