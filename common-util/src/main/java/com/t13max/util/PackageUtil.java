@@ -28,6 +28,9 @@ public class PackageUtil {
      * @Date 14:18 2024/5/23
      */
     public static Set<Class<?>> scan(String packageName, ClassLoader classLoader) {
+        if (classLoader == null) {
+            classLoader = Thread.currentThread().getContextClassLoader();
+        }
         Set<Class<?>> classes = new LinkedHashSet<>();
         boolean recursive = true;
         String packageDirName = packageName.replace('.', '/');
@@ -101,7 +104,7 @@ public class PackageUtil {
      * @Since: 22:29 2024/7/19
      */
     public static Set<Class<?>> scan(String pack) {
-        return scan(pack, Thread.currentThread().getContextClassLoader());
+        return scan(pack, null);
     }
 
     /**

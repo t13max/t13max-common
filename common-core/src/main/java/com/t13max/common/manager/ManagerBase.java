@@ -1,8 +1,11 @@
 package com.t13max.common.manager;
 
+import com.t13max.common.config.BaseConfig;
+import com.t13max.common.config.SundryKey;
 import com.t13max.common.dag.DAG;
 import com.t13max.common.dag.DAGNode;
 import com.t13max.common.exception.CommonException;
+import com.t13max.common.run.Application;
 import com.t13max.common.util.Log;
 import com.t13max.util.PackageUtil;
 
@@ -48,22 +51,14 @@ public abstract class ManagerBase implements Comparable<ManagerBase> {
      * @Since: 22:34 2024/7/19
      */
     private static void initialize() {
+
         instances.clear();
 
-        Set<Class<?>> classSet = PackageUtil.scan("com.t13max");
-
-        //创建实例
-        initialize(classSet);
-    }
-
-    /**
-     * 指定类加载器 初始化manager
-     *
-     * @Author: t13max
-     * @Since: 22:38 2024/7/19
-     */
-    public static void initialize(ClassLoader classLoader) {
-        instances.clear();
+        ClassLoader classLoader = null;
+        BaseConfig config = Application.config();
+        if (config != null) {
+            classLoader = (ClassLoader) config.getSundryMap().get(SundryKey.PACK_CLASS_LOADER);
+        }
 
         Set<Class<?>> classSet = PackageUtil.scan("com.t13max", classLoader);
 
