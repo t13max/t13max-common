@@ -16,6 +16,7 @@
         <module>common-template</module>
         <module>t13max-bot</module>
         <module>t13max-hotagent</module>
+        <module>t13max-dms</module>
     </modules>
 
     <properties>
