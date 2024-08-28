@@ -7,6 +7,7 @@ import java.lang.reflect.InvocationTargetException;
 
 /**
  * 循环节点
+ * 慎重赋值frame为true 会死循环执行 一直判断condition 外部tick会被卡住
  *
  * @Author t13max
  * @Date 18:18 2024/5/17
@@ -15,6 +16,7 @@ public abstract class LoopDecoratorNode<E> extends Decorator<E> {
 
     protected boolean needRun;
 
+    //一次tick内 会循环执行
     protected boolean frame;
 
     public LoopDecoratorNode() {
@@ -54,7 +56,6 @@ public abstract class LoopDecoratorNode<E> extends Decorator<E> {
             }
             onSuccess();
         } else {
-            //这里是不是死循环了... 有空看看
             if (condition()) {
                 if (child.getStatus() == Status.BT_RUNNING) {
                     child.runWithGuard();
