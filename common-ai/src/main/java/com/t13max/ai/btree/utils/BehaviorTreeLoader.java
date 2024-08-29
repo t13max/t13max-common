@@ -139,13 +139,11 @@ public class BehaviorTreeLoader {
                 node = new RevertNode<>();
                 break;
             case "UntilFailure":{
-                String frame = nodeElement.attributeValue("frame");
-                node = new UntilFailureNode<>(Boolean.parseBoolean(frame));
+                node = new UntilFailureNode<>();
                 break;
             }
             case "UntilSuccess":{
-                String frame = nodeElement.attributeValue("frame");
-                node = new UntilSuccessNode<>(Boolean.parseBoolean(frame));
+                node = new UntilSuccessNode<>();
                 break;
             }
             case "AssignmentNode":
