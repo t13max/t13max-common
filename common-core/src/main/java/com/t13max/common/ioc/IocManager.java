@@ -4,6 +4,7 @@ package com.t13max.common.ioc;
 import com.t13max.common.exception.CommonException;
 import com.t13max.common.ioc.annotaion.Autowired;
 import com.t13max.common.ioc.annotaion.Component;
+import com.t13max.common.manager.ManagerBase;
 import com.t13max.util.PackageUtil;
 
 import java.lang.reflect.Constructor;
@@ -16,17 +17,31 @@ import java.util.*;
  * @author: t13max
  * @since: 14:33 2024/6/6
  */
-public class IocContainer {
+public class IocManager extends ManagerBase {
 
     private static final Map<String, Object> objectMap = new HashMap<>();
     private static final Map<String, Object> preObjectMap = new HashMap<>();
 
-    static {
+    @Override
+    protected void init() {
         try {
             initBean();
         } catch (Exception e) {
             throw new CommonException(e);
         }
+    }
+
+    @Override
+    protected void onShutdown() {
+        super.onShutdown();
+    }
+
+    public <T> T getBean(Class<T> clazz) {
+        return (T)objectMap.get(clazz.getName());
+    }
+
+    public <T> T getBean(String name) {
+        return (T)objectMap.get(name);
     }
 
     private static void initBean() throws Exception {
