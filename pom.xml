@@ -17,6 +17,9 @@
         <module>t13max-bot</module>
         <module>t13max-hotagent</module>
         <module>t13max-dms</module>
+        <module>t13max-data</module>
+        <module>t13max-data/t13max-data-redis</module>
+        <module>t13max-rpc</module>
     </modules>
 
     <properties>

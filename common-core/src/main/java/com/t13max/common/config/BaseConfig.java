@@ -33,6 +33,9 @@ public class BaseConfig {
     //netty设置
     private final NettyConfig netty = new NettyConfig();
 
+    //rpc配置
+    private RpcConfig rpc;
+
     //杂项
     private final Map<String, Object> sundryMap = new HashMap<>();
 
