@@ -36,6 +36,10 @@ public class BaseConfig {
     //rpc配置
     private RpcConfig rpc;
 
+    private RedisConfig redis = new RedisConfig();
+
+    private DataConfig dataConfig = new DataConfig();
+
     //杂项
     private final Map<String, Object> sundryMap = new HashMap<>();
 

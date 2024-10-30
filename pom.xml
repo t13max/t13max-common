@@ -20,6 +20,7 @@
         <module>t13max-data</module>
         <module>t13max-data/t13max-data-redis</module>
         <module>t13max-rpc</module>
+        <module>t13max-data/t13max-data-mongo</module>
     </modules>
 
     <properties>
@@ -32,6 +33,11 @@
         <log4j.version>2.17.2</log4j.version>
         <lombok.version>1.18.30</lombok.version>
         <groovy.version>3.0.9</groovy.version>
+        <javassist.version>3.24.1-GA</javassist.version>
+        <mongodb.version>4.7.0</mongodb.version>
+        <morpgia.version>2.4.14</morpgia.version>
+        <sofa-rpc-all.version>5.5.9</sofa-rpc-all.version>
+        <failsafe.version>2.0.1</failsafe.version>
         <dom4j.version>2.1.4</dom4j.version>
         <easyexcel.version>3.0.5</easyexcel.version>
         <freemarker.version>2.3.31</freemarker.version>
@@ -39,6 +45,7 @@
         <netty.version>4.1.108.Final</netty.version>
         <protobuf.version>3.25.1</protobuf.version>
         <snakeyaml.version>2.2</snakeyaml.version>
+        <redission.version>3.15.6</redission.version>
     </properties>
     <build>
         <plugins>
