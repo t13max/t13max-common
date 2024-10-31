@@ -1,5 +1,8 @@
 package com.t13max.common.action;
 
+import com.t13max.common.config.ActionConfig;
+import com.t13max.common.config.BaseConfig;
+import com.t13max.common.run.Application;
 import com.t13max.common.util.Log;
 import com.t13max.util.ThreadNameFactory;
 
@@ -20,11 +23,12 @@ public class ActionExecutor {
 
     private boolean isRunning = true;
 
-    public static ActionExecutor createExecutor(int corePoolSize, int maxPoolSize, String name) {
+    public static ActionExecutor createExecutor() {
+        ActionConfig action = Application.config().getAction();
         ActionExecutor executor = new ActionExecutor();
-        executor.corePoolSize = corePoolSize;
-        executor.maxPoolSize = maxPoolSize;
-        executor.name = name;
+        executor.corePoolSize = action.getCore();
+        executor.maxPoolSize = action.getMax();
+        executor.name = action.getName();
         executor.init();
         return executor;
     }

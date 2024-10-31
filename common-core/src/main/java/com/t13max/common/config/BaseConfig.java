@@ -33,14 +33,22 @@ public class BaseConfig {
 
     private boolean print;
 
+    //Sqlite数据文件
+    private String dbFile;
+
     //netty设置
     private final NettyConfig netty = new NettyConfig();
+
+    //Action
+    private final ActionConfig action = new ActionConfig();
 
     //rpc配置
     private RpcConfig rpc;
 
+    //Redis相关配置
     private RedisConfig redis = new RedisConfig();
 
+    //数据库配置
     private DataConfig dataConfig = new DataConfig();
 
     //杂项

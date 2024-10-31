@@ -12,6 +12,8 @@ import lombok.Setter;
 @Setter(AccessLevel.PRIVATE)
 public class RpcConfig {
 
+    private boolean open;
+
     private boolean failsafe = true;
 
     private boolean rateLimit = true;

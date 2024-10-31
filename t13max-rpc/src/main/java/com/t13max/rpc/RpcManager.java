@@ -54,6 +54,10 @@ public class RpcManager extends ManagerBase {
     @Override
     protected void init() {
         RpcConfig rpcConfig = Application.config().getRpc();
+        if (!rpcConfig.isOpen()) {
+            Log.RPC.info("未开启RPC");
+            return;
+        }
         registryConfig = new RegistryConfig().setProtocol(rpcConfig.getRegistryProtocol()).setAddress(rpcConfig.getAddress());
         try {
             Set<Class<?>> classSet = PackageUtil.scan("com.t13max");

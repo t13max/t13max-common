@@ -4,18 +4,19 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
-
 /**
+ * 业务线程池配置
+ *
  * @author: t13max
- * @since: 19:09 2024/5/23
+ * @since: 20:11 2024/5/23
  */
 @Getter
 @Setter(AccessLevel.PRIVATE)
-public class RedisConfig {
+public class ActionConfig {
 
-    private boolean simple = true;
+    private int core;
 
-    private List<SingleRedissonConfig> singleRedissonConfig;
+    private int max;
 
+    private String name;
 }

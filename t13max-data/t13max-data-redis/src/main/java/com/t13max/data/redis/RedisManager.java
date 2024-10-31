@@ -2,15 +2,24 @@ package com.t13max.data.redis;
 
 
 import com.t13max.common.config.BaseConfig;
+import com.t13max.common.config.RedisConfig;
+import com.t13max.common.config.SingleRedissonConfig;
 import com.t13max.common.manager.ManagerBase;
 import com.t13max.common.run.Application;
 import com.t13max.data.redis.utils.IRedisUtils;
+import com.t13max.data.redis.utils.Log;
 import com.t13max.data.redis.utils.RedissonUtils;
 import com.t13max.data.redis.utils.SimpleRedisUtils;
+import org.redisson.Redisson;
 import org.redisson.api.*;
 import org.redisson.client.codec.Codec;
+import org.redisson.codec.JsonJacksonCodec;
+import org.redisson.config.Config;
+import org.redisson.config.SingleServerConfig;
 
 import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author t13max
@@ -20,15 +29,55 @@ public class RedisManager extends ManagerBase {
 
     private IRedisUtils redisUtils;
 
+    public static RedisManager inst() {
+        return inst(RedisManager.class);
+    }
+
     @Override
     protected void init() {
-        BaseConfig config = Application.config();
-        if (config.getRedis().isSimple()) {
+        BaseConfig baseConfig = Application.config();
+        RedisConfig redis = baseConfig.getRedis();
+        if (redis.isSimple()) {
             redisUtils = new SimpleRedisUtils();
+            Log.REDIS.info("Redis使用简易版");
         } else {
-            //真正的redis 待实现
-            redisUtils = new RedissonUtils(Collections.emptyList());
+            List<SingleRedissonConfig> singleRedissonConfig = redis.getSingleRedissonConfig();
+            List<RedissonClient> redissonClientList = new LinkedList<>();
+            for (SingleRedissonConfig redissonConfig : singleRedissonConfig) {
+                Config config = createConfig(redissonConfig);
+                RedissonClient redissonClient = Redisson.create(config);
+                redissonClientList.add(redissonClient);
+            }
+            //传入RedisClient
+            redisUtils = new RedissonUtils(redissonClientList);
+            Log.REDIS.info("Redis使用正式版");
         }
+    }
+
+    private Config createConfig(SingleRedissonConfig singleRedissonConfig) {
+        Config config = new Config();
+        SingleServerConfig serverConfig = config.useSingleServer()
+                .setAddress(singleRedissonConfig.getAddress())
+                .setIdleConnectionTimeout(singleRedissonConfig.getIdleConnectionTimeout())
+                .setConnectTimeout(singleRedissonConfig.getConnectTimeout())
+                .setTimeout(singleRedissonConfig.getTimeout())
+                .setRetryAttempts(singleRedissonConfig.getRetryAttempts())
+                .setRetryInterval(singleRedissonConfig.getRetryInterval())
+                .setSubscriptionsPerConnection(singleRedissonConfig.getSubscriptionsPerConnection())
+                .setSubscriptionConnectionMinimumIdleSize(singleRedissonConfig.getSubscriptionConnectionMinimumIdleSize())
+                .setSubscriptionConnectionPoolSize(singleRedissonConfig.getSubscriptionConnectionPoolSize())
+                .setDatabase(singleRedissonConfig.getDatabase())
+                .setConnectionPoolSize(singleRedissonConfig.getConnectionPoolSize())
+                .setConnectionMinimumIdleSize(singleRedissonConfig.getConnectionMinimumIdleSize())
+                .setPingConnectionInterval(300000)
+                .setKeepAlive(true)
+                .setTcpNoDelay(true);
+        String password = singleRedissonConfig.getPassword();
+        if (password != null && !password.isBlank()) {
+            serverConfig.setPassword(password);
+        }
+        config.setCodec(JsonJacksonCodec.INSTANCE);
+        return config;
     }
 
     @Override

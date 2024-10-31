@@ -7,6 +7,7 @@ package com.t13max.common.net;
  * @since 18:17 2024/8/23
  */
 public interface INettyServer {
+
     void startServer() throws InterruptedException;
 
     void shutdown();
