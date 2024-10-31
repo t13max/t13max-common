@@ -70,11 +70,11 @@ public class MongoManager extends ManagerBase {
 
     }
 
-    public <T extends IData> List<T> findList(Class<T> clazz) {
+    public <DATA extends IData> List<DATA> findList(Class<DATA> clazz) {
         return datastore.find(clazz, new Document()).stream().toList();
     }
 
-    public <T extends IData> List<T> findList(long id, Class<T> clazz) {
+    public <DATA extends IData> List<DATA> findList(long id, Class<DATA> clazz) {
         return datastore.find(clazz, new Document("_id", id)).stream().toList();
     }
 
@@ -84,7 +84,7 @@ public class MongoManager extends ManagerBase {
      * @Author t13max
      * @Date 15:51 2024/8/2
      */
-    public <T extends IData> T findById(Class<T> clazz, long id) {
+    public <DATA extends IData> DATA findById(Class<DATA> clazz, long id) {
         return datastore.find(clazz, new Document("_id", id)).first();
     }
 
@@ -94,8 +94,8 @@ public class MongoManager extends ManagerBase {
      * @Author t13max
      * @Date 15:25 2024/8/14
      */
-    public <T extends IData> T findById(String collectionName, int id) {
-        return (T) datastore.find(collectionName).filter(Filters.eq("_id", id)).first();
+    public <DATA extends IData> DATA findById(String collectionName, int id) {
+        return (DATA) datastore.find(collectionName).filter(Filters.eq("_id", id)).first();
     }
 
     /**
@@ -104,7 +104,7 @@ public class MongoManager extends ManagerBase {
      * @Author t13max
      * @Date 15:51 2024/8/2
      */
-    public <T extends IData> T findById(Class<T> clazz, Document filter) {
+    public <DATA extends IData> DATA findById(Class<DATA> clazz, Document filter) {
         return datastore.find(clazz, filter).first();
     }
 
@@ -114,12 +114,12 @@ public class MongoManager extends ManagerBase {
      * @Author t13max
      * @Date 15:51 2024/8/2
      */
-    public <T extends IData> boolean delete(T data) {
+    public <DATA extends IData> boolean delete(DATA data) {
         DeleteResult deleteResult = datastore.delete(data);
         return deleteResult.getDeletedCount() > 0;
     }
 
-    public <T extends IData> boolean delete(String collectionName, T data) {
+    public <DATA extends IData> boolean delete(String collectionName, DATA data) {
         DeleteResult deleteResult = datastore.delete(data, new DeleteOptions().collection(collectionName));
         return deleteResult.getDeletedCount() > 0;
     }
@@ -130,8 +130,8 @@ public class MongoManager extends ManagerBase {
      * @Author t13max
      * @Date 16:43 2024/8/7
      */
-    public <T extends IData> boolean deleteList(List<T> dataList) {
-        for (T data : dataList) {
+    public <DATA extends IData> boolean deleteList(List<DATA> dataList) {
+        for (DATA data : dataList) {
             this.delete(data);
         }
         return true;
@@ -143,7 +143,7 @@ public class MongoManager extends ManagerBase {
      * @Author t13max
      * @Date 15:53 2024/8/2
      */
-    public <T extends IData> T save(T data) {
+    public <DATA extends IData> DATA save(DATA data) {
         return datastore.save(data);
     }
 
@@ -153,7 +153,7 @@ public class MongoManager extends ManagerBase {
      * @Author t13max
      * @Date 16:19 2024/8/2
      */
-    public <T extends IData> T save(T data, String collectionName) {
+    public <DATA extends IData> DATA save(DATA data, String collectionName) {
         return datastore.save(data, new InsertOneOptions().collection(collectionName));
     }
 
@@ -163,8 +163,8 @@ public class MongoManager extends ManagerBase {
      * @Author t13max
      * @Date 16:35 2024/8/7
      */
-    public <T extends IData> boolean saveList(List<T> dataList) {
-        for (T data : dataList) {
+    public <DATA extends IData> boolean saveList(List<DATA> dataList) {
+        for (DATA data : dataList) {
             save(data);
         }
         return true;

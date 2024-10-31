@@ -11,5 +11,5 @@ import org.apache.logging.log4j.Logger;
  */
 public class Log {
 
-    public static Logger RPC = LogManager.getLogger("ACTION");
+    public static Logger RPC = LogManager.getLogger("RPC");
 }

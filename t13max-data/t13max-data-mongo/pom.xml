@@ -10,6 +10,7 @@
 
     <groupId>com.t13max.data.mongo</groupId>
     <artifactId>t13max-data-mongo</artifactId>
+    <version>1.0.1</version>
     <packaging>jar</packaging>
 
     <name>t13max-data-mongo</name>

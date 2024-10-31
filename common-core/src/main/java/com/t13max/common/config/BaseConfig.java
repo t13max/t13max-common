@@ -22,8 +22,11 @@ import java.util.Map;
 @Getter
 public class BaseConfig {
 
-    //实例名 理论上全局唯一
+    //实例名 理论上全局唯一 实例功能+id
     private String instanceName;
+
+    //实例id
+    private int instanceNo;
 
     //配置类类型
     private Class<?> appConfig;
