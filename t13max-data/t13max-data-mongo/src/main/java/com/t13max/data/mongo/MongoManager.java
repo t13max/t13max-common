@@ -74,6 +74,10 @@ public class MongoManager extends ManagerBase {
         return datastore.find(clazz, new Document()).stream().toList();
     }
 
+    public <DATA extends IData> List<DATA> findList(Class<DATA> clazz, Document filter) {
+        return datastore.find(clazz, filter).stream().toList();
+    }
+
     public <DATA extends IData> List<DATA> findList(long id, Class<DATA> clazz) {
         return datastore.find(clazz, new Document("_id", id)).stream().toList();
     }
@@ -104,7 +108,7 @@ public class MongoManager extends ManagerBase {
      * @Author t13max
      * @Date 15:51 2024/8/2
      */
-    public <DATA extends IData> DATA findById(Class<DATA> clazz, Document filter) {
+    public <DATA extends IData> DATA findFilter(Class<DATA> clazz, Document filter) {
         return datastore.find(clazz, filter).first();
     }
 
