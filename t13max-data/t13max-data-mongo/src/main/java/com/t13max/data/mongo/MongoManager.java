@@ -119,6 +119,11 @@ public class MongoManager extends ManagerBase {
         return deleteResult.getDeletedCount() > 0;
     }
 
+    public <DATA extends IData> boolean delete(long id, Class<DATA> clazz) {
+        DeleteResult deleteResult = datastore.delete(new Document("_id", id), new DeleteOptions().collection(clazz.getSimpleName()));
+        return deleteResult.getDeletedCount() > 0;
+    }
+
     public <DATA extends IData> boolean delete(String collectionName, DATA data) {
         DeleteResult deleteResult = datastore.delete(data, new DeleteOptions().collection(collectionName));
         return deleteResult.getDeletedCount() > 0;
@@ -135,6 +140,11 @@ public class MongoManager extends ManagerBase {
             this.delete(data);
         }
         return true;
+    }
+
+    public <DATA extends IData> boolean deleteAll(Class<DATA> clazz) {
+        DeleteResult deleteResult = datastore.delete(new Document(), new DeleteOptions().collection(clazz.getSimpleName()));
+        return deleteResult.getDeletedCount() > 0;
     }
 
     /**
