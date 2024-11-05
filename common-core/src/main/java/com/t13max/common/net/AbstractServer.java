@@ -6,10 +6,13 @@ import com.t13max.common.exception.CommonException;
 import com.t13max.common.run.Application;
 import com.t13max.common.run.ServerClazz;
 import com.t13max.common.util.Log;
+import com.t13max.util.ThreadNameFactory;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.*;
+import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.epoll.EpollServerSocketChannel;
+import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
@@ -38,30 +41,49 @@ public abstract class AbstractServer implements INettyServer {
     @Override
     public void startServer() throws InterruptedException {
 
-        init();
+        initInitializer();
 
-        BaseConfig config = Application.config();
-        NettyConfig configNetty = config.getNetty();
+        initGroup();
 
-        bootstrap = new ServerBootstrap();
-        bootstrap.group(bossGroup, workerGroup)
-                .channel(configNetty.isUseEpoll() ? EpollServerSocketChannel.class : NioServerSocketChannel.class)
-                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, configNetty.getConnectTimeoutMillis())
-                // 在defaults.yaml文件中，low.watermark默认大小为8388608，即8M；high.watermark默认大小为16777216，即16M
-                .option(ChannelOption.WRITE_BUFFER_WATER_MARK, new WriteBufferWaterMark(configNetty.getLowWaterMark(), configNetty.getHighWaterMark()))
-                .option(ChannelOption.SO_BACKLOG, configNetty.getSoBackLog())
-                .option(ChannelOption.SO_REUSEADDR, configNetty.isSsoReuseAddr())
-                .childOption(ChannelOption.TCP_NODELAY, configNetty.isTcpNodelay())
-                .childOption(ChannelOption.SO_KEEPALIVE, configNetty.isSsoKeepAlive())
-                .option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)
-                .childOption(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT);
+        NettyConfig nettyConfig = Application.config().getNetty();
+        initStrap();
 
         bootstrap.childHandler(channelInitializer);
 
-        InetSocketAddress address = new InetSocketAddress(configNetty.getPort());
+        InetSocketAddress address = new InetSocketAddress(nettyConfig.getPort());
         channel = bootstrap.bind(address).sync().channel();
         Log.msg.info("netty server bind on {} success!", address);
 
+    }
+
+    protected void initStrap() {
+        NettyConfig nettyConfig = Application.config().getNetty();
+        bootstrap = new ServerBootstrap();
+        bootstrap.group(bossGroup, workerGroup)
+                .channel(nettyConfig.isUseEpoll() ? EpollServerSocketChannel.class : NioServerSocketChannel.class)
+                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, nettyConfig.getConnectTimeoutMillis())
+                // 在defaults.yaml文件中，low.watermark默认大小为8388608，即8M；high.watermark默认大小为16777216，即16M
+                .option(ChannelOption.WRITE_BUFFER_WATER_MARK, new WriteBufferWaterMark(nettyConfig.getLowWaterMark(), nettyConfig.getHighWaterMark()))
+                .option(ChannelOption.SO_BACKLOG, nettyConfig.getSoBackLog())
+                .option(ChannelOption.SO_REUSEADDR, nettyConfig.isSsoReuseAddr())
+                .childOption(ChannelOption.TCP_NODELAY, nettyConfig.isTcpNodelay())
+                .childOption(ChannelOption.SO_KEEPALIVE, nettyConfig.isSsoKeepAlive())
+                .option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)
+                .childOption(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT);
+    }
+
+    protected void initGroup() {
+        NettyConfig nettyConfig = Application.config().getNetty();
+        int threadNum = Runtime.getRuntime().availableProcessors() * 2;
+        if (nettyConfig.isUseEpoll()) {
+            this.bossGroup = new EpollEventLoopGroup(1, new ThreadNameFactory("epoll-boss"));
+            this.workerGroup = new EpollEventLoopGroup(threadNum, new ThreadNameFactory("epoll-worker"));
+            Log.msg.info("use EpollEventLoopGroup.....");
+        } else {
+            this.bossGroup = new NioEventLoopGroup(1, new ThreadNameFactory("nio-boss"));
+            this.workerGroup = new NioEventLoopGroup(threadNum, new ThreadNameFactory("nio-worker"));
+            Log.msg.info("use NioEventLoopGroup.....");
+        }
     }
 
     /**
@@ -99,7 +121,7 @@ public abstract class AbstractServer implements INettyServer {
      * @Author t13max
      * @Date 19:24 2024/5/23
      */
-    protected abstract void init();
+    protected abstract void initInitializer();
 
     /**
      * 初始化server对象
