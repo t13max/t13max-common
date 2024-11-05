@@ -1,4 +1,4 @@
-package com.t13max.common.event;
+package com.t13max.data.redis.event;
 
 /**
  * 作用域

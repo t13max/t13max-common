@@ -25,6 +25,9 @@ public class BaseConfig {
     //实例名 理论上全局唯一 实例功能+id
     private String instanceName;
 
+    //业务名
+    private String serviceName;
+
     //实例id
     private int instanceNo;
 

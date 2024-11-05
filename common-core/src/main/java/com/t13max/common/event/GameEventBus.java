@@ -2,26 +2,50 @@ package com.t13max.common.event;
 
 
 import com.t13max.common.manager.ManagerBase;
+import com.t13max.common.util.Log;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
- * 后续要加入redis发布订阅 弄成跨进程事件系统
+ * 事件总线
  *
  * @author: t13max
  * @since: 14:56 2024/5/29
  */
 public class GameEventBus extends ManagerBase {
 
-    private final Map<IEventEnum, LinkedList<IEventListener>> listenersMap = new ConcurrentHashMap<>();
+    protected final Map<IEventEnum, LinkedList<IEventListener>> listenersMap = new ConcurrentHashMap<>();
 
-    private final ExecutorService asyncExecutor = Executors.newFixedThreadPool(4);
+    protected final ExecutorService asyncExecutor = Executors.newFixedThreadPool(4);
 
     public static GameEventBus inst() {
         return inst(GameEventBus.class);
+    }
+
+    @Override
+    protected void onShutdown() {
+        asyncExecutor.shutdown();
+        try {
+            boolean shutdown = asyncExecutor.awaitTermination(2, TimeUnit.SECONDS);
+            if (!shutdown) {
+                asyncExecutor.shutdownNow();
+                shutdown = asyncExecutor.awaitTermination(2, TimeUnit.SECONDS);
+                if (!shutdown) {
+                    Log.manager.error("GameEventBus, asyncExecutor停不下来啦");
+                }
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    protected void init() {
+        super.init();
     }
 
     /**
