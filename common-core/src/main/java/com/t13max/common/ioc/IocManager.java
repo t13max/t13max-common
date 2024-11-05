@@ -7,6 +7,7 @@ import com.t13max.common.ioc.annotaion.Component;
 import com.t13max.common.manager.ManagerBase;
 import com.t13max.util.PackageUtil;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.*;
@@ -21,6 +22,10 @@ public class IocManager extends ManagerBase {
 
     private static final Map<String, Object> objectMap = new HashMap<>();
     private static final Map<String, Object> preObjectMap = new HashMap<>();
+
+    public static IocManager inst() {
+        return inst(IocManager.class);
+    }
 
     @Override
     protected void init() {
@@ -37,11 +42,40 @@ public class IocManager extends ManagerBase {
     }
 
     public <T> T getBean(Class<T> clazz) {
-        return (T)objectMap.get(clazz.getName());
+        return (T) objectMap.get(clazz.getName());
     }
 
     public <T> T getBean(String name) {
-        return (T)objectMap.get(name);
+        return (T) objectMap.get(name);
+    }
+
+    public <A extends Annotation> Map<String, Object> getBeansWithAnno(Class<A> clazz) {
+        Map<String, Object> result = new HashMap<>();
+        for (Map.Entry<String, Object> entry : objectMap.entrySet()) {
+            Object object = entry.getValue();
+            A annotation = object.getClass().getAnnotation(clazz);
+            if (annotation == null) {
+                continue;
+            }
+            result.put(entry.getKey(), object);
+        }
+        return result;
+    }
+
+    public <T> Map<String, T> getBeansOfClazz(Class<T> clazz) {
+        Map<String, T> result = new HashMap<>();
+        for (Map.Entry<String, Object> entry : objectMap.entrySet()) {
+            Object object = entry.getValue();
+            if (!clazz.isAssignableFrom(object.getClass())) {
+                continue;
+            }
+            result.put(entry.getKey(), (T) object);
+        }
+        return result;
+    }
+
+    public Set<String> getBeanNames() {
+        return objectMap.keySet();
     }
 
     private static void initBean() throws Exception {
