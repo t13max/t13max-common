@@ -1,5 +1,7 @@
 package com.t13max.rpc;
 
+import com.alipay.sofa.rpc.common.RpcConfigs;
+import com.alipay.sofa.rpc.common.RpcOptions;
 import com.alipay.sofa.rpc.config.ConsumerConfig;
 import com.alipay.sofa.rpc.config.ProviderConfig;
 import com.alipay.sofa.rpc.config.RegistryConfig;
@@ -15,6 +17,7 @@ import com.t13max.rpc.fail.FailSafeStatus;
 import com.t13max.rpc.fail.Status;
 import com.t13max.rpc.proxy.RPCServerImplProxyHandler;
 import com.t13max.rpc.util.Log;
+import com.t13max.util.OSUtils;
 import com.t13max.util.PackageUtil;
 import com.t13max.util.SocketUtils;
 import net.jodah.failsafe.CircuitBreaker;
@@ -24,6 +27,9 @@ import java.lang.reflect.*;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static com.alipay.remoting.Configs.NETTY_BUFFER_HIGH_WATERMARK;
+import static com.alipay.remoting.Configs.NETTY_BUFFER_LOW_WATERMARK;
 
 
 /**
@@ -53,6 +59,9 @@ public class RpcManager extends ManagerBase {
 
     @Override
     protected void init() {
+
+        initRpc();
+
         RpcConfig rpcConfig = Application.config().getRpc();
         if (!rpcConfig.isOpen()) {
             Log.RPC.info("未开启RPC");
@@ -90,6 +99,34 @@ public class RpcManager extends ManagerBase {
 
         //对外提供服务
         exportService();
+    }
+
+    private void initRpc() {
+        // 需要关掉SofaRPC的shutdown钩子，不然在正常shutdown时rpc会不可用
+        RpcConfigs.putValue(RpcOptions.JVM_SHUTDOWN_HOOK, false);
+        // 序列化方式 支持 hessian2,json
+        RpcConfigs.putValue(RpcOptions.DEFAULT_SERIALIZATION, "hessian2");
+        // 开压缩
+        RpcConfigs.putValue(RpcOptions.COMPRESS_OPEN, true);
+        // 客户端在Linux开EPoll
+        RpcConfigs.putValue(RpcOptions.TRANSPORT_USE_EPOLL, OSUtils.isUnix());
+        // 服务器在Linux开EPoll
+        RpcConfigs.putValue(RpcOptions.SERVER_EPOLL, OSUtils.isUnix());
+        // 去除客户端接口重复引用次数限制
+        RpcConfigs.putValue(RpcOptions.CONSUMER_REPEATED_REFERENCE_LIMIT, -1);
+
+        // 传输缓冲区参数设置
+        // 默认8192
+        RpcConfigs.putValue(RpcOptions.TRANSPORT_BUFFER_SIZE, 16 * 1024);
+        // 默认1024
+        RpcConfigs.putValue(RpcOptions.TRANSPORT_BUFFER_MIN, 8 * 1024);
+        // 默认32768
+        RpcConfigs.putValue(RpcOptions.TRANSPORT_BUFFER_MAX, 128 * 1024);
+        // 默认8388608
+        RpcConfigs.putValue(RpcOptions.TRANSPORT_PAYLOAD_MAX, 4 * 1024 * 1024);
+
+        System.setProperty(NETTY_BUFFER_LOW_WATERMARK, Integer.toString(1 * 1024 * 1024));
+        System.setProperty(NETTY_BUFFER_HIGH_WATERMARK, Integer.toString(4 * 1024 * 1024));
     }
 
     @Override
