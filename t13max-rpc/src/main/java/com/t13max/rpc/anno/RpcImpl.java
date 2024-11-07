@@ -13,4 +13,6 @@ import java.lang.annotation.*;
 @Documented
 public @interface RpcImpl {
 
+    //rpc服务所在组
+    String group();
 }
