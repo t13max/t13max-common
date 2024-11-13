@@ -20,9 +20,9 @@ public class Binary<X, Y> {
         this.y = y;
     }
 
-    public Binary(Binary binary) {
-        this.x = (X) binary.x;
-        this.y = (Y) binary.y;
+    public Binary(Binary<X,Y> binary) {
+        this.x = binary.x;
+        this.y = binary.y;
     }
 
     public X getX() {

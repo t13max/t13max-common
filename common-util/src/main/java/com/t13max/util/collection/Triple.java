@@ -19,9 +19,9 @@ public class Triple<X, Y, Z> extends Binary<X, Y> {
         this.z = z;
     }
 
-    public Triple(Triple triple) {
-        super((X) triple.getX(), (Y) triple.getY());
-        this.z = (Z) triple.z;
+    public Triple(Triple<X, Y, Z> triple) {
+        super(triple.getX(), triple.getY());
+        this.z = triple.z;
     }
 
     public Z getZ() {
