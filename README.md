@@ -9,12 +9,15 @@
 | [common-util]     | 工具类     |                        |
 | [common-template] | 打表读表    | 自动生成java实体类 打json文件    |
 | [t13max-bot]      | 机器人模块   | 自动化机器人 压测,自动执行业务模拟真实玩家 |
+| [t13max-data]     | 数据模块    | Redis/MongoDB          |
+| [t13max-rpc]      | Rpc     | Rpc基础                  |
+| [t13max-hotagent] | 热更      | 热更相关                   |
+| [t13max-dms]      | 自动内存管理  | 自动内存管理 事务 回滚 自动入库      |
 
 ### 备忘录
 
 * 打表模块优化
-* 热更 JMX 
-* redis 跨进程事件系统 rpc
+* 热更 JMX
 * 完善机器人 消息处理 异常处理
 * 是否启用某模块 配置优化 (ioc rpc)
 

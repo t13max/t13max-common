@@ -10,10 +10,10 @@
     <name>t13max-common</name>
     <url>https://gitee.com/t13max</url>
     <modules>
-        <module>common-ai</module>
-        <module>common-util</module>
-        <module>common-core</module>
-        <module>common-template</module>
+        <module>t13max-ai</module>
+        <module>t13max-util</module>
+        <module>t13max-core</module>
+        <module>t13max-template</module>
         <module>t13max-bot</module>
         <module>t13max-hotagent</module>
         <module>t13max-dms</module>
