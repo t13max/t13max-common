@@ -8,12 +8,11 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
-    <groupId>com.t13max.data.redis</groupId>
-    <artifactId>t13max-data-redis</artifactId>
-    <version>1.0.0</version>
+    <groupId>com.t13max.mysql</groupId>
+    <artifactId>t13max-mysql</artifactId>
     <packaging>jar</packaging>
 
-    <name>t13max-data-redis</name>
+    <name>t13max-mysql</name>
     <url>http://maven.apache.org</url>
 
     <properties>
@@ -27,9 +26,9 @@
             <version>${t13max-core.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.redisson</groupId>
-            <artifactId>redisson</artifactId>
-            <version>${redission.version}</version>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis</artifactId>
+            <version>${mybatis.version}</version>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>
