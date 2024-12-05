@@ -16,83 +16,83 @@ public class Blackboard {
 
     private boolean isUpdating;
 
-    private final Map<String, BlackboardParam> paramMap = new HashMap<>();
+    private final Map<String, BlackboardValue> valueMap = new HashMap<>();
 
-    private final Set<String> removeParams = new HashSet<>();
+    private final Set<String> removeValues = new HashSet<>();
 
-    private final Map<String, BlackboardParam> addParams = new HashMap<>();
+    private final Map<String, BlackboardValue> addValueMap = new HashMap<>();
 
     public void update() {
 
         this.isUpdating = true;
-        if (!paramMap.isEmpty()) {
-            paramMap.forEach((key, value) -> {
+        if (!valueMap.isEmpty()) {
+            valueMap.forEach((key, value) -> {
                 value.update();
 
                 if (value.isExpired())
-                    removeParams.add(key);
+                    removeValues.add(key);
             });
         }
 
         this.isUpdating = false;
-        if (!addParams.isEmpty()) {
-            paramMap.putAll(addParams);
-            addParams.clear();
+        if (!addValueMap.isEmpty()) {
+            valueMap.putAll(addValueMap);
+            addValueMap.clear();
         }
-        if (!removeParams.isEmpty()) {
-            removeParams.forEach(paramMap::remove);
-            removeParams.clear();
+        if (!removeValues.isEmpty()) {
+            removeValues.forEach(valueMap::remove);
+            removeValues.clear();
         }
 
     }
 
-    public void set(String key, Object value) {
+    public void put(String key, Object value) {
         if (isUpdating)
-            addParams.put(key, new BlackboardParam.SnapBoardParam(value));
+            addValueMap.put(key, new BlackboardValue.SnapBoardValue(value));
         else
-            paramMap.put(key, new BlackboardParam.SnapBoardParam(value));
+            valueMap.put(key, new BlackboardValue.SnapBoardValue(value));
     }
 
-    public void set(String key, Object value, int millis) {
+    public void put(String key, Object value, int millis) {
         if (isUpdating)
-            addParams.put(key, new BlackboardParam.TimeBlackBoardParam(value, millis));
+            addValueMap.put(key, new BlackboardValue.TimeBlackBoardValue(value, millis));
         else
-            paramMap.put(key, new BlackboardParam.TimeBlackBoardParam(value, millis));
+            valueMap.put(key, new BlackboardValue.TimeBlackBoardValue(value, millis));
     }
 
-    public void setApplyIfAbsent(String key, Applier value, int millis) {
+    public void putApplyIfAbsent(String key, Applier value, int millis) {
         if (isUpdating)
-            addParams.putIfAbsent(key, new BlackboardParam.FunctionalParam(value, millis));
+            addValueMap.putIfAbsent(key, new BlackboardValue.FunctionalValue(value, millis));
         else
-            paramMap.putIfAbsent(key, new BlackboardParam.FunctionalParam(value, millis));
+            valueMap.putIfAbsent(key, new BlackboardValue.FunctionalValue(value, millis));
     }
 
     public Optional<Object> getValue(String key) {
-        if (getParam(key).isPresent())
-            return Optional.ofNullable(getParam(key).get().getValue());
+        if (getBlackboardValue(key).isPresent())
+            return Optional.ofNullable(getBlackboardValue(key).get().getValue());
         return Optional.empty();
     }
 
     public Optional<Integer> getIntValue(String key) {
-        if (getParam(key).isPresent())
-            return Optional.ofNullable((Integer) getParam(key).get().getValue());
+        if (getBlackboardValue(key).isPresent())
+            return Optional.ofNullable((Integer) getBlackboardValue(key).get().getValue());
         return Optional.empty();
     }
 
     public Optional<Long> getLongValue(String key) {
-        if (getParam(key).isPresent())
-            return Optional.ofNullable((Long) getParam(key).get().getValue());
+        if (getBlackboardValue(key).isPresent())
+            return Optional.ofNullable((Long) getBlackboardValue(key).get().getValue());
         return Optional.empty();
     }
 
     public Optional<Float> getFloatValue(String key) {
-        if (getParam(key).isPresent())
-            return Optional.ofNullable((Float) getParam(key).get().getValue());
+        if (getBlackboardValue(key).isPresent())
+            return Optional.ofNullable((Float) getBlackboardValue(key).get().getValue());
         return Optional.empty();
     }
 
     public void computeIfPresent(String key, BiFunction<String, Object, Object> remappingFunction) {
-        getParam(key).ifPresent(v -> {
+        getBlackboardValue(key).ifPresent(v -> {
             Object newValue = remappingFunction.apply(key, v.getValue());
             v.setValue(newValue);
         });
@@ -100,24 +100,40 @@ public class Blackboard {
 
     public boolean remove(String key) {
         if (isUpdating) {
-            if (paramMap.containsKey(key))
-                return removeParams.add(key);
+            if (valueMap.containsKey(key))
+                return removeValues.add(key);
             else
                 return false;
         } else
-            return paramMap.remove(key) != null;
+            return valueMap.remove(key) != null;
     }
 
     public void clear() {
 
-        this.paramMap.clear();
+        this.valueMap.clear();
     }
 
-    private Optional<BlackboardParam> getParam(String key) {
-        BlackboardParam blackboardParam = paramMap.get(key);
-        if (blackboardParam == null) {
+    public <V> void merge(String key, V value, BiFunction<? super V, ? super V, ? extends V> remappingFunction) {
+        BlackboardValue blackboardValue = this.valueMap.get(key);
+        if (blackboardValue == null) {
+            put(key, value);
+            return;
+        }
+        V oldValue = (V) blackboardValue.getValue();
+        V newValue = (oldValue == null) ? value :
+                remappingFunction.apply(oldValue, value);
+        if (newValue == null) {
+            remove(key);
+        } else {
+            put(key, newValue);
+        }
+    }
+
+    private Optional<BlackboardValue> getBlackboardValue(String key) {
+        BlackboardValue blackboardValue = valueMap.get(key);
+        if (blackboardValue == null) {
             return Optional.empty();
         }
-        return Optional.of(blackboardParam);
+        return Optional.of(blackboardValue);
     }
 }

@@ -13,7 +13,7 @@ import lombok.Setter;
  */
 @Setter
 @Getter
-public abstract class BlackboardParam {
+public abstract class BlackboardValue {
 
     protected Object value;
 
@@ -21,11 +21,11 @@ public abstract class BlackboardParam {
 
     abstract boolean isExpired();
 
-    static class TimeBlackBoardParam extends BlackboardParam {
+    static class TimeBlackBoardValue extends BlackboardValue {
 
         long expireTime;
 
-        TimeBlackBoardParam(Object value, int millis) {
+        TimeBlackBoardValue(Object value, int millis) {
             this.value = value;
             this.expireTime = System.currentTimeMillis() + millis;
         }
@@ -41,11 +41,11 @@ public abstract class BlackboardParam {
         }
     }
 
-    static class SnapBoardParam extends BlackboardParam {
+    static class SnapBoardValue extends BlackboardValue {
 
         boolean isTick;
 
-        SnapBoardParam(Object value) {
+        SnapBoardValue(Object value) {
             this.value = value;
         }
 
@@ -60,9 +60,9 @@ public abstract class BlackboardParam {
         }
     }
 
-    static class FunctionalParam extends TimeBlackBoardParam {
+    static class FunctionalValue extends TimeBlackBoardValue {
 
-        FunctionalParam(Applier value, int millis) {
+        FunctionalValue(Applier value, int millis) {
             super(value, millis);
         }
 
