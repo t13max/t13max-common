@@ -296,9 +296,9 @@ public class BehaviorTreeLoader {
             }
             if (element.attributeValue("TriggerMode") != null) {
                 triggerType = switch (element.attributeValue("TriggerMode")) {
-                    case "Transfer" -> TriggerType.translateNode.type;
-                    case "Return" -> TriggerType.returnNode.type;
-                    case "Event" -> TriggerType.eventNode.type;
+                    case "Transfer" -> TriggerType.TRANSLATE_NODE.type;
+                    case "Return" -> TriggerType.RETURN_NODE.type;
+                    case "Event" -> TriggerType.EVENT_NODE.type;
                     default -> throw new IllegalArgumentException("不支持的 event TriggerMode 类型");
                 };
 

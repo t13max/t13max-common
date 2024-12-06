@@ -24,7 +24,7 @@ public abstract class Decorator<E> extends BTNode<E> {
     @Override
     protected int addChildToNode(BTNode<E> child) {
         if (this.child != null)
-            throw new IllegalStateException("装饰器不能添加子节点");
+            throw new IllegalStateException("装饰器不能添加多个子节点");
         this.child = child;
         return 0;
     }

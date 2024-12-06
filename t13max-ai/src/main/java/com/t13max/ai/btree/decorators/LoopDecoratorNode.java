@@ -42,6 +42,7 @@ public abstract class LoopDecoratorNode<E> extends Decorator<E> {
     @Override
     protected void run() {
         needRun = true;
+        //一次tick内内完成多次执行
         if (frame) {
             while (condition()) {
                 if (child.getStatus() == Status.BT_RUNNING) {
@@ -56,6 +57,7 @@ public abstract class LoopDecoratorNode<E> extends Decorator<E> {
             }
             onSuccess();
         } else {
+            //本次是否还需要继续执行
             if (condition()) {
                 if (child.getStatus() == Status.BT_RUNNING) {
                     child.runWithGuard();
@@ -66,8 +68,10 @@ public abstract class LoopDecoratorNode<E> extends Decorator<E> {
                     else
                         child.runWithOutGuard();
                 }
+                //当前节点为Running状态
                 onRunning();
             } else {
+                //不需要执行了 本节点成功
                 onSuccess();
             }
         }

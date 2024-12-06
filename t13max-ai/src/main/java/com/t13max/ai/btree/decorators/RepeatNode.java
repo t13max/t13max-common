@@ -13,16 +13,15 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class RepeatNode<E> extends LoopDecoratorNode<E> {
 
+    //已经循环的次数
     private int count;
-
+    //需要循环的次数
     private int times;
-
-    public RepeatNode() {
-    }
 
     public RepeatNode(int times, boolean frame) {
         super(frame);
         this.times = times;
+        //需要在一帧内完成多次执行 则次数必须大于0
         if (times < 0 && frame)
             throw new IllegalArgumentException("需要循环执行则次数必须大于零");
     }
@@ -37,9 +36,7 @@ public class RepeatNode<E> extends LoopDecoratorNode<E> {
         if (!super.start()) {
             return false;
         }
-
         count = times;
-
         return true;
     }
 
@@ -58,6 +55,7 @@ public class RepeatNode<E> extends LoopDecoratorNode<E> {
             super.childSuccess(runningNode);
             needRun = false;
         } else
+            //小于0则是无限循环
             needRun = true;
     }
 

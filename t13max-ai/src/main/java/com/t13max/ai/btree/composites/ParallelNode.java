@@ -73,6 +73,7 @@ public class ParallelNode<E> extends BranchNode<E> {
     }
 
     public enum Policy {
+
         /**
          * 顺序策略 所有子节点执行成功 返回成功
          *
@@ -106,6 +107,7 @@ public class ParallelNode<E> extends BranchNode<E> {
                 return Boolean.FALSE;
             }
         },
+
         /**
          * 选择策略
          *
@@ -145,6 +147,7 @@ public class ParallelNode<E> extends BranchNode<E> {
     }
 
     public enum Coordinator {
+
         /**
          * 子节点每次都会恢复或重新执行
          *
@@ -180,6 +183,7 @@ public class ParallelNode<E> extends BranchNode<E> {
                 parallel.onRunning();
             }
         },
+
         /**
          * 子节点执行成功或失败后需等到并行节点成功失败后才能重新执行
          *

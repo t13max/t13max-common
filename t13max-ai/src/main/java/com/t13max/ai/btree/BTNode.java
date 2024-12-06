@@ -339,7 +339,7 @@ public abstract class BTNode<E> {
             return false;
         eventNode.cleanup();
         eventNode.addEventParam(param);
-        if (eventNode.getTriggerType() == TriggerType.eventNode.type) {
+        if (eventNode.getTriggerType() == TriggerType.EVENT_NODE.type) {
             //处理事件节点
             eventNode.setParent(this);
             eventNode.start();

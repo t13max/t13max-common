@@ -52,7 +52,7 @@ public class EventNode<E> extends ReferenceNode<E> {
     @Override
     protected void run() {
         super.run();
-        if (triggerType != TriggerType.eventNode.type) {
+        if (triggerType != TriggerType.EVENT_NODE.type) {
             if (child.getStatus() == Status.BT_SUCCESS)
                 childSuccess(child);
             else if (child.getStatus() == Status.BT_FAILURE)
@@ -78,7 +78,7 @@ public class EventNode<E> extends ReferenceNode<E> {
     @Override
     public void end() {
         super.end();
-        if (triggerType == TriggerType.returnNode.type)
+        if (triggerType == TriggerType.RETURN_NODE.type)
             parent.nodeReturn();
     }
 
