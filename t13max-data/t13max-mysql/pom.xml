@@ -8,8 +8,7 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
-    <groupId>com.t13max.mysql</groupId>
-    <artifactId>t13max-mysql</artifactId>
+    <artifactId>t13max-data-mysql</artifactId>
     <packaging>jar</packaging>
 
     <name>t13max-mysql</name>

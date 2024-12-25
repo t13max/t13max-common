@@ -7,7 +7,6 @@
         <version>1.0.1</version>
     </parent>
 
-    <groupId>com.t13max.dms</groupId>
     <artifactId>t13max-dms</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>

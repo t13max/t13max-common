@@ -8,7 +8,6 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
-    <groupId>com.t13max.data.redis</groupId>
     <artifactId>t13max-data-redis</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
