@@ -51,8 +51,16 @@ public abstract class TemplateHelper<T extends ITemplate> {
      * @Date 15:01 2024/5/23
      */
     public void transfer() {
+        if (TEMP_DATA_MAP == null) {
+            return;
+        }
         this.DATA_MAP = TEMP_DATA_MAP;
         this.TEMP_DATA_MAP = null;
+        transferAfter();
+    }
+
+    protected void transferAfter() {
+
     }
 
     /**
@@ -69,6 +77,11 @@ public abstract class TemplateHelper<T extends ITemplate> {
             //打印日志 告知没有reload成功
             Log.template.error("加载表失败! fileName={}", fileName);
         }
+
+        if (!this.loadAfter()) {
+            //打印日志 告知没有reload成功
+            Log.template.error("加载表失败! fileName={}", fileName);
+        }
     }
 
     /**
@@ -78,14 +91,19 @@ public abstract class TemplateHelper<T extends ITemplate> {
      * @Date 15:04 2024/5/23
      */
     public void load() {
-
+        if (!DATA_MAP.isEmpty()) {
+            return;
+        }
         if (!doLoad()) {
             //直接抛出异常 不让起服
             throw new TemplateException("加载表失败");
         }
+        if (!loadAfter()) {
+            throw new TemplateException("加载表失败");
+        }
     }
 
-    public boolean doLoad() {
+    private boolean doLoad() {
         //ReadDataListener<T> tReadDataListener = new ReadDataListener<>();
         //EasyExcel.read("/Users/antingbi/IdeaProjects/t13max-common/common-template/target/test-classes/" + fileName, this.getClazz(), tReadDataListener).headRowNumber(2).sheet("hero").doRead();
         //List<T> iTemplates = tReadDataListener.getList();
@@ -101,6 +119,10 @@ public abstract class TemplateHelper<T extends ITemplate> {
             return false;
         }
         iTemplates.forEach(e -> TEMP_DATA_MAP.put(e.getId(), e));
+        return true;
+    }
+
+    protected boolean loadAfter() {
         return true;
     }
 
