@@ -17,12 +17,23 @@ import java.util.List;
 @Log4j2
 public class JsonUtils {
 
-    public <T extends ITemplate> List<T> readCommodityTxt(String fileName, Class<T> clazz) {
+    public <T extends ITemplate> List<T> readOutJson(String fileName, Class<T> clazz) {
+        List<T> iTemplates = null;
+        try {
+            String string = TextUtil.readOutText(fileName);
+            iTemplates = JSON.parseArray(string, clazz);
+        } catch (Exception e) {
+            throw new CommonException("读json转换对象失败, error={}" + e.getMessage());
+        }
+        return iTemplates;
+    }
+
+    public <T extends ITemplate> List<T> readInJarJson(String fileName, Class<T> clazz) {
 
         List<T> iTemplates = null;
 
         try {
-            String string = TextUtil.readText(fileName);
+            String string = TextUtil.readInJarText(fileName);
             iTemplates = JSON.parseArray(string, clazz);
         } catch (Exception e) {
             throw new CommonException("读json转换对象失败, error={}" + e.getMessage());

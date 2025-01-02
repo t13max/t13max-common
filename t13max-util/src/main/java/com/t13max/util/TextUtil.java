@@ -3,8 +3,11 @@ package com.t13max.util;
 import lombok.experimental.UtilityClass;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * 文本工具类
@@ -15,7 +18,19 @@ import java.io.InputStreamReader;
 @UtilityClass
 public class TextUtil {
 
-    public String readText(String fileName) {
+    public String readOutText(String fileName) {
+        String content;
+        try {
+            // 读取文件内容为字符串
+            content = new String(Files.readAllBytes(Paths.get(fileName)));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return content;
+    }
+
+    public String readInJarText(String fileName) {
         return readIgnore(fileName, null);
     }
 

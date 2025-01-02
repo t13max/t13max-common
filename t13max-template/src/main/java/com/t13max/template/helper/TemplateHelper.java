@@ -16,6 +16,8 @@ import java.util.Map;
  */
 public abstract class TemplateHelper<T extends ITemplate> {
 
+    private final static String PATH_ENV = "TEMPLATE_PATH";
+
     protected String fileName;
 
     protected volatile Map<Integer, T> DATA_MAP;
@@ -88,7 +90,13 @@ public abstract class TemplateHelper<T extends ITemplate> {
         //EasyExcel.read("/Users/antingbi/IdeaProjects/t13max-common/common-template/target/test-classes/" + fileName, this.getClazz(), tReadDataListener).headRowNumber(2).sheet("hero").doRead();
         //List<T> iTemplates = tReadDataListener.getList();
         TEMP_DATA_MAP = new HashMap<>();
-        List<T> iTemplates = JsonUtils.readCommodityTxt(fileName, this.getClazz());
+        String pathEnv = System.getenv(PATH_ENV);
+        List<T> iTemplates;
+        if (pathEnv == null) {
+            iTemplates = JsonUtils.readInJarJson(fileName, this.getClazz());
+        } else {
+            iTemplates = JsonUtils.readOutJson(pathEnv + "/" + fileName, this.getClazz());
+        }
         if (iTemplates == null || iTemplates.isEmpty()) {
             return false;
         }
