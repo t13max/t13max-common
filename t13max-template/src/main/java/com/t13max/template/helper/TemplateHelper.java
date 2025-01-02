@@ -91,7 +91,7 @@ public abstract class TemplateHelper<T extends ITemplate> {
      * @Date 15:04 2024/5/23
      */
     public final void load() {
-        if (!DATA_MAP.isEmpty()) {
+        if (DATA_MAP != null) {
             return;
         }
         if (!doLoad()) {
