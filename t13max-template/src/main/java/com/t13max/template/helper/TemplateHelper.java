@@ -24,7 +24,7 @@ public abstract class TemplateHelper<T extends ITemplate> {
 
     protected volatile Map<Integer, T> TEMP_DATA_MAP;
 
-    public TemplateHelper(String fileName) {
+    protected TemplateHelper(String fileName) {
         this.fileName = fileName;
     }
 
@@ -50,7 +50,7 @@ public abstract class TemplateHelper<T extends ITemplate> {
      * @Author t13max
      * @Date 15:01 2024/5/23
      */
-    public void transfer() {
+    public final void transfer() {
         if (TEMP_DATA_MAP == null) {
             return;
         }
@@ -69,7 +69,7 @@ public abstract class TemplateHelper<T extends ITemplate> {
      * @Author t13max
      * @Date 15:03 2024/5/23
      */
-    public void reload() {
+    public final void reload() {
 
         Log.template.info("{}从新加载开始!", fileName);
 
@@ -90,7 +90,7 @@ public abstract class TemplateHelper<T extends ITemplate> {
      * @Author t13max
      * @Date 15:04 2024/5/23
      */
-    public void load() {
+    public final void load() {
         if (!DATA_MAP.isEmpty()) {
             return;
         }
@@ -132,7 +132,7 @@ public abstract class TemplateHelper<T extends ITemplate> {
      * @Author t13max
      * @Date 15:02 2024/5/23
      */
-    public T getTemplate(int id) {
+    public final T getTemplate(int id) {
         return DATA_MAP.get(id);
     }
 
@@ -142,7 +142,7 @@ public abstract class TemplateHelper<T extends ITemplate> {
      * @Author t13max
      * @Date 15:23 2024/5/23
      */
-    public Collection<T> getAll() {
+    public final Collection<T> getAll() {
         return DATA_MAP.values();
     }
 
@@ -152,7 +152,7 @@ public abstract class TemplateHelper<T extends ITemplate> {
      * @Author t13max
      * @Date 20:31 2024/5/27
      */
-    public Collection<T> getTempAll() {
+    public final Collection<T> getTempAll() {
         return TEMP_DATA_MAP.values();
     }
 
