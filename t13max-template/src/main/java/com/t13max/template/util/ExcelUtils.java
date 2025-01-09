@@ -51,7 +51,7 @@ public class ExcelUtils {
         }
 
         String str = String.valueOf(value);
-        if (str == null || str.isEmpty()) {
+        if (str == null || str.trim().isEmpty()) {
             return getDefaultCellValue(dataType);
         }
 
@@ -89,6 +89,8 @@ public class ExcelUtils {
                 }
             }
         } catch (Exception e) {
+            Log.template.error("value={}", value);
+            e.printStackTrace();
             throw new TemplateException("数据解析出错");
         }
     }
