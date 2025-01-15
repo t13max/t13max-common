@@ -292,7 +292,7 @@ public class RandomUtil {
         if (resultNum >= list.size()) {
             result.addAll(list);
         } else {
-            while (list.size() > 0 && result.size() < resultNum) {
+            while (!list.isEmpty() && result.size() < resultNum) {
                 Integer random = random(list);
                 result.add(random);
                 list.remove(random);
