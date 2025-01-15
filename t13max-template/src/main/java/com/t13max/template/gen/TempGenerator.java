@@ -8,6 +8,7 @@ import com.t13max.template.exception.TemplateException;
 import com.t13max.template.listener.TemplateReadListener;
 import com.t13max.template.util.Log;
 import com.t13max.util.FileUtil;
+import freemarker.cache.ClassTemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.Template;
@@ -136,12 +137,39 @@ public class TempGenerator {
     private Template getTemplate(String tmplName) throws IOException {
         // Freemarker配置对象
         Configuration cfg = new Configuration(Configuration.VERSION_2_3_31);
-        URL url = this.getClass().getClassLoader().getResource("tmpl");
-        if (url == null) {
-            throw new TemplateException("tmpl不存在");
+
+        // 获取模板文件的输入流 不能关闭
+        InputStream templateStream = this.getClass().getClassLoader().getResourceAsStream("tmpl/" + tmplName);
+        if (templateStream == null) {
+            throw new TemplateException("模板 '" + tmplName + "' 不存在");
         }
-        // 模板目录
-        cfg.setDirectoryForTemplateLoading(new File(url.getFile()));
+
+        // 设置输入流加载器
+        cfg.setTemplateLoader(new freemarker.cache.TemplateLoader() {
+            @Override
+            public Object findTemplateSource(String name) throws IOException {
+                if (name.equals(tmplName)) {
+                    return templateStream;
+                }
+                return null;
+            }
+
+            @Override
+            public long getLastModified(Object templateSource) {
+                return 0;
+            }
+
+            @Override
+            public Reader getReader(Object templateSource, String encoding) throws IOException {
+                return new InputStreamReader((InputStream) templateSource, encoding);
+            }
+
+            @Override
+            public void closeTemplateSource(Object templateSource) throws IOException {
+                // 不需要关闭 InputStream
+            }
+        });
+
         // 设置对象包装器
         cfg.setObjectWrapper(new DefaultObjectWrapper(Configuration.VERSION_2_3_31));
         cfg.setEncoding(Locale.getDefault(), StandardCharsets.UTF_8.name());
@@ -180,7 +208,7 @@ public class TempGenerator {
                 List<Map<Object, Object>> dataMap = sheetData.getDataMap();
                 String formatContent = JSON.toJSONString(dataMap, SerializerFeature.PrettyFormat,
                         SerializerFeature.WriteMapNullValue, SerializerFeature.WriteDateUseDateFormat,
-                        SerializerFeature.SortField,SerializerFeature.DisableCircularReferenceDetect);
+                        SerializerFeature.SortField, SerializerFeature.DisableCircularReferenceDetect);
                 FileUtil.writeFile(GenerateConfig.jsonPath, sheetData.getSheetName(), "json", formatContent);
             }
         }
