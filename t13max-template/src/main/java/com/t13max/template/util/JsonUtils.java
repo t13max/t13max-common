@@ -7,6 +7,7 @@ import com.t13max.template.ITemplate;
 import com.t13max.util.TextUtil;
 import lombok.experimental.UtilityClass;
 import lombok.extern.log4j.Log4j2;
+import org.apache.poi.ss.formula.functions.T;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -14,7 +15,6 @@ import java.io.InputStreamReader;
 import java.util.List;
 
 @UtilityClass
-@Log4j2
 public class JsonUtils {
 
     public <T extends ITemplate> List<T> readOutJson(String fileName, Class<T> clazz) {
@@ -50,7 +50,7 @@ public class JsonUtils {
 
             InputStream resourceAsStream = org.apache.logging.log4j.core.util.JsonUtils.class.getClassLoader().getResourceAsStream(filaName);
             if (resourceAsStream == null) {
-                log.error("JsonUtils, 加载{}失败", filaName);
+                Log.template.error("JsonUtils, 加载{}失败", filaName);
                 return new JSONArray();
             }
 
@@ -69,6 +69,17 @@ public class JsonUtils {
             e.printStackTrace();
         }
 
+        return result;
+    }
+
+    public static <T> T readJsonFile(String fileName, Class<T> clazz) {
+        T result = null;
+        try {
+            String string = TextUtil.readOutText(fileName);
+            result = JSON.parseObject(string, clazz);
+        } catch (Exception e) {
+            throw new CommonException("读json转换对象失败, error={}" + e.getMessage());
+        }
         return result;
     }
 }
