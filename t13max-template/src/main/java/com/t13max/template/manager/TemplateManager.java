@@ -137,8 +137,12 @@ public class TemplateManager extends ManagerBase {
      * @Date 16:42 2024/5/23
      */
     public boolean reload() {
+        return reloadWithPath(null);
+    }
+
+    public boolean reloadWithPath(String path) {
         try {
-            helperMap.values().forEach(TemplateHelper::reload);
+            helperMap.values().forEach(e -> e.reload(path));
             for (TemplateHelper<?> templateHelper : helperMap.values()) {
                 if (!templateHelper.configCheck()) {
                     return false;

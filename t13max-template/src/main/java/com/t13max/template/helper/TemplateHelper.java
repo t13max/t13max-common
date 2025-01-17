@@ -70,10 +70,14 @@ public abstract class TemplateHelper<T extends ITemplate> {
      * @Date 15:03 2024/5/23
      */
     public final void reload() {
+        reload(null);
+    }
+
+    public final void reload(String path) {
 
         Log.template.info("{}从新加载开始!", fileName);
 
-        if (!this.doLoad()) {
+        if (!this.doLoad(path)) {
             //打印日志 告知没有reload成功
             Log.template.error("加载表失败! fileName={}", fileName);
         }
@@ -104,16 +108,19 @@ public abstract class TemplateHelper<T extends ITemplate> {
     }
 
     private boolean doLoad() {
-        //ReadDataListener<T> tReadDataListener = new ReadDataListener<>();
-        //EasyExcel.read("/Users/antingbi/IdeaProjects/t13max-common/common-template/target/test-classes/" + fileName, this.getClazz(), tReadDataListener).headRowNumber(2).sheet("hero").doRead();
-        //List<T> iTemplates = tReadDataListener.getList();
+        return doLoad(null);
+    }
+
+    private boolean doLoad(String path) {
         TEMP_DATA_MAP = new HashMap<>();
-        String pathEnv = System.getenv(PATH_ENV);
+        if (path == null) {
+            path = System.getenv(PATH_ENV);
+        }
         List<T> iTemplates;
-        if (pathEnv == null) {
+        if (path == null) {
             iTemplates = JsonUtils.readInJarJson(fileName, this.getClazz());
         } else {
-            iTemplates = JsonUtils.readOutJson(pathEnv + "/" + fileName, this.getClazz());
+            iTemplates = JsonUtils.readOutJson(path + "/" + fileName, this.getClazz());
         }
         if (iTemplates == null || iTemplates.isEmpty()) {
             return false;
@@ -121,6 +128,7 @@ public abstract class TemplateHelper<T extends ITemplate> {
         iTemplates.forEach(e -> TEMP_DATA_MAP.put(e.getId(), e));
         return true;
     }
+
 
     protected boolean loadAfter() {
         return true;
