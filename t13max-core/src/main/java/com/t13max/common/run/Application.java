@@ -5,9 +5,11 @@ import com.t13max.common.manager.ManagerBase;
 import com.t13max.common.net.AbstractServer;
 import com.t13max.common.util.Log;
 import com.t13max.util.func.Applier;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.config.LoggerConfig;
 
 import java.util.concurrent.locks.LockSupport;
 
@@ -111,33 +113,48 @@ public class Application {
 
     private static void checkLogLevel() {
         String logLevel = System.getenv("LOG_LEVEL");
-        if (logLevel == null) {
-            Log.APP.info("日志级别默认!");
-            return;
+        if (logLevel != null) {
+            Level targetLevel = getLevel(logLevel);
+            if (targetLevel == null) return;
+            // 获取 LoggerContext
+            LoggerContext context = (LoggerContext) LogManager.getContext(false);
+            for (LoggerConfig loggerConfig : context.getConfiguration().getLoggers().values()) {
+                loggerConfig.setLevel(targetLevel);
+            }
+            Log.APP.info("全局日志级别 level={}", logLevel);
         }
-        // 获取 LoggerContext
-        LoggerContext context = (LoggerContext) LogManager.getContext(false);
-        String loggerName = "com.t13max";
+
+        String t13maxLogLevel = System.getenv("T13MAX_LOG_LEVEL");
+        if (t13maxLogLevel != null) {
+            Level targetLevel = getLevel(t13maxLogLevel);
+            if (targetLevel != null) {
+                Configurator.setLevel("con.t13max", targetLevel);
+                Log.APP.info("t13max日志级别 level={}", t13maxLogLevel);
+            }
+        }
+    }
+
+    private static Level getLevel(String logLevel) {
+        Level targetLevel;
         // 根据级别设置日志等级
         switch (logLevel.toUpperCase()) {
             case "DEBUG":
-                Configurator.setLevel(loggerName, org.apache.logging.log4j.Level.DEBUG);
+                targetLevel = Level.DEBUG;
                 break;
             case "INFO":
-                Configurator.setLevel(loggerName, org.apache.logging.log4j.Level.INFO);
+                targetLevel = Level.INFO;
                 break;
             case "WARN":
-                Configurator.setLevel(loggerName, org.apache.logging.log4j.Level.WARN);
+                targetLevel = Level.WARN;
                 break;
             case "ERROR":
-                Configurator.setLevel(loggerName, org.apache.logging.log4j.Level.ERROR);
+                targetLevel = Level.ERROR;
                 break;
             default:
                 Log.APP.error("日志级别配置错误! level={}", logLevel);
+                return null;
         }
-
-        // 打印当前日志级别
-        Log.APP.error("当前日志级别 level={}", logLevel);
+        return targetLevel;
     }
 
     /**
