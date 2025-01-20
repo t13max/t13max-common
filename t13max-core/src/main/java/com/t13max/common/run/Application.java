@@ -3,7 +3,13 @@ package com.t13max.common.run;
 import com.t13max.common.config.BaseConfig;
 import com.t13max.common.manager.ManagerBase;
 import com.t13max.common.net.AbstractServer;
+import com.t13max.common.util.Log;
 import com.t13max.util.func.Applier;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.config.LoggerConfig;
 
 import java.util.concurrent.locks.LockSupport;
 
@@ -35,6 +41,8 @@ public class Application {
 
             //防止重复启动
             if (running) return;
+            //日志级别
+            checkLogLevel();
             //加载配置
             config = BaseConfig.loadConfig(clazz);
             //初始化所有manager
@@ -67,6 +75,8 @@ public class Application {
 
             //防止重复启动
             if (running) return;
+            //日志级别
+            checkLogLevel();
             //加载配置
             config = BaseConfig.loadConfig(clazz);
             //执行外部逻辑
@@ -81,12 +91,79 @@ public class Application {
 
     }
 
+    public static synchronized void run(String[] args, Applier applier) throws Exception {
+
+        try {
+
+            //防止重复启动
+            if (running) return;
+            //日志级别
+            checkLogLevel();
+            //执行外部逻辑
+            applier.apply();
+            //启动完成
+            running = true;
+        } catch (Exception e) {
+            //遇到任何异常 直接退出
+            e.printStackTrace();
+            System.exit(0);
+        }
+
+    }
+
+    private static void checkLogLevel() {
+        String logLevel = System.getenv("LOG_LEVEL");
+        if (logLevel != null) {
+            Level targetLevel = getLevel(logLevel);
+            if (targetLevel == null) return;
+            // 获取 LoggerContext
+            LoggerContext context = (LoggerContext) LogManager.getContext(false);
+            for (LoggerConfig loggerConfig : context.getConfiguration().getLoggers().values()) {
+                loggerConfig.setLevel(targetLevel);
+            }
+            Log.APP.info("全局日志级别 level={}", logLevel);
+        }
+
+        String t13maxLogLevel = System.getenv("T13MAX_LOG_LEVEL");
+        if (t13maxLogLevel != null) {
+            Level targetLevel = getLevel(t13maxLogLevel);
+            if (targetLevel != null) {
+                Configurator.setLevel("con.t13max", targetLevel);
+                Log.APP.info("t13max日志级别 level={}", t13maxLogLevel);
+            }
+        }
+    }
+
+    private static Level getLevel(String logLevel) {
+        Level targetLevel;
+        // 根据级别设置日志等级
+        switch (logLevel.toUpperCase()) {
+            case "DEBUG":
+                targetLevel = Level.DEBUG;
+                break;
+            case "INFO":
+                targetLevel = Level.INFO;
+                break;
+            case "WARN":
+                targetLevel = Level.WARN;
+                break;
+            case "ERROR":
+                targetLevel = Level.ERROR;
+                break;
+            default:
+                Log.APP.error("日志级别配置错误! level={}", logLevel);
+                return null;
+        }
+        return targetLevel;
+    }
+
     /**
      * 获取配置文件
      *
      * @Author t13max
      * @Date 17:58 2024/5/23
      */
+    @SuppressWarnings("unchecked")
     public static <T extends BaseConfig> T config() {
         return (T) config;
     }
