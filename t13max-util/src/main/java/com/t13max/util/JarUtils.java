@@ -11,9 +11,8 @@ public class JarUtils {
 
     // 获取 JAR 所在目录
     public static String getJarDirectory() {
-        String path = JarUtils.class.getProtectionDomain().getCodeSource().getLocation().getPath();
         try {
-            URI uri = new URI(path);
+            URI uri = JarUtils.class.getProtectionDomain().getCodeSource().getLocation().toURI();
             File jarFile = new File(uri);
             return jarFile.getParent(); // 获取 JAR 文件所在的目录
         } catch (Exception e) {
