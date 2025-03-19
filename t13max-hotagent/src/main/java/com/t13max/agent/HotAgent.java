@@ -15,27 +15,28 @@ import java.lang.management.ManagementFactory;
  * @since: 15:41 2024/8/12
  */
 public class HotAgent {
+
     public HotAgent() {
     }
 
-    public static void premain(String var0, Instrumentation instrumentation) {
+    public static void premain(String agentArgs, Instrumentation instrumentation) {
         Log.agent.info("HotAgent-premain-start");
         Log.agent.info("isRedefineClassesSupported : {}", instrumentation.isRedefineClassesSupported());
         regMBean(instrumentation);
     }
 
-    public static void agentmain(String var0, Instrumentation var1) {
-        premain(var0, var1);
+    public static void agentmain(String agentArgs, Instrumentation instrumentation) {
+        premain(agentArgs, instrumentation);
     }
 
-    private static void regMBean( Instrumentation instrumentation) {
+    private static void regMBean(Instrumentation instrumentation) {
         try {
-            MBeanServer var1 = ManagementFactory.getPlatformMBeanServer();
-            var1.registerMBean(new Reload(instrumentation), new ObjectName("HotAgent:type=Reload"));
+            MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
+            //注册进目标程序的MBean服务器中 可以使用jmx调用
+            mBeanServer.registerMBean(new Reload(instrumentation), new ObjectName("HotAgent:type=Reload"));
             Log.agent.info("HotAgent-rim-start");
-        } catch (Throwable var2) {
-            Log.agent.error("HotAgent-rim-error", var2);
+        } catch (Throwable throwable) {
+            Log.agent.error("HotAgent-rim-error", throwable);
         }
-
     }
 }

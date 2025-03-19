@@ -1,4 +1,6 @@
-package com.t13max.agent.reload;
+package com.t13max.agent.deployer;
+
+import com.t13max.agent.wrap.Result;
 
 import java.lang.instrument.Instrumentation;
 import java.util.List;
@@ -9,8 +11,8 @@ import java.util.List;
  */
 public class HotDeployHotDeployer extends HotDeployer{
 
-    public HotDeployHotDeployer(Result var1, Instrumentation var2) {
-        super(var1, var2);
+    public HotDeployHotDeployer(Result result, Instrumentation instrumentation) {
+        super(result, instrumentation);
     }
 
     protected String getHotDeployJarPath() {

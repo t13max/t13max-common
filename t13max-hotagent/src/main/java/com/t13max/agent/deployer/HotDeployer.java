@@ -1,5 +1,8 @@
-package com.t13max.agent.reload;
+package com.t13max.agent.deployer;
 
+import com.t13max.agent.wrap.ClassDefinitionWrap;
+import com.t13max.agent.wrap.DelayClassDefinitionWrap;
+import com.t13max.agent.wrap.Result;
 import com.t13max.agent.util.Log;
 import com.t13max.util.ClassUtil;
 import com.t13max.util.ParseUtil;
@@ -34,21 +37,45 @@ public abstract class HotDeployer {
     //执行特定代码
     private final List<DelayClassDefinitionWrap> delayExecClassesWrap = new ArrayList<>();
 
-    public HotDeployer(Result var1, Instrumentation var2) {
-        this.result = var1;
-        this.inst = var2;
+    public HotDeployer(Result result, Instrumentation instrumentation) {
+        this.result = result;
+        this.inst = instrumentation;
     }
 
+    /**
+     * 获取热更包路径
+     *
+     * @Author t13max
+     * @Date 15:50 2025/3/19
+     */
     protected abstract String getHotDeployJarPath();
 
+    /**
+     * 是否必须
+     *
+     * @Author t13max
+     * @Date 15:50 2025/3/19
+     */
     protected boolean isRequired() {
         return true;
     }
 
+    /**
+     * 稍后执行类名列表
+     *
+     * @Author t13max
+     * @Date 15:51 2025/3/19
+     */
     protected List<String> getDelayExecClassNames() {
         return null;
     }
 
+    /**
+     * 执行
+     *
+     * @Author t13max
+     * @Date 15:51 2025/3/19
+     */
     public Result exec() {
         try {
             //读取jar文件
@@ -87,6 +114,7 @@ public abstract class HotDeployer {
                 //获取二进制数组
                 newBytes = ParseUtil.toBytes(newStream);
                 try {
+                    //拿到老class对象
                     Class<?> oldClazz = Class.forName(className);
                     byte[] oldBytes = null;
                     InputStream inputStream = oldClazz.getResourceAsStream("/" + name);
@@ -103,7 +131,7 @@ public abstract class HotDeployer {
 
             for (ClassDefinitionWrap wrap : redefineNewClassesWrap) {
                 className = wrap.getClassName();
-                byte[] bytes = wrap.getEntryBytes();
+                byte[] bytes = wrap.getNewBytes();
                 if (!this.defineNewClass(className, bytes)) {
                     Log.agent.error("热加载(新类){}失败1{}", className);
                     this.result.setSuccess(false);
@@ -130,8 +158,8 @@ public abstract class HotDeployer {
             for (ClassDefinitionWrap wrap : redefineOldClassesWrap) {
                 Class<?> clazz = wrap.getClazz();
                 className = wrap.getClassName();
-                newBytes = wrap.getEntryBytes();
-                byte[] bytes = wrap.getOriginalBytes();
+                newBytes = wrap.getNewBytes();
+                byte[] bytes = wrap.getOldBytes();
                 try {
                     this.inst.redefineClasses(new ClassDefinition(clazz, newBytes));
                     this.tryAppendDelayClassDefinitionWrap(clazz, bytes);
@@ -142,6 +170,7 @@ public abstract class HotDeployer {
                 Log.agent.info("热加载{}成功", className);
             }
 
+            //执行稍后执行列表
             this.execDelayClass();
             Log.agent.info("热加载{}成功", this.getHotDeployJarPath());
             jarFile.close();
@@ -161,24 +190,44 @@ public abstract class HotDeployer {
         return list;
     }
 
+    /**
+     * 尝试添加到稍后执行class
+     *
+     * @Author t13max
+     * @Date 15:58 2025/3/19
+     */
     private void tryAppendDelayClassDefinitionWrap(Class<?> clazz, byte[] bytes) {
         if (this._getDelayExecClassNames().contains(clazz.getName())) {
             this.delayExecClassesWrap.add(new DelayClassDefinitionWrap(clazz, bytes));
         }
     }
 
+    /**
+     * 稍后执行列表开始执行
+     *
+     * @Author t13max
+     * @Date 15:59 2025/3/19
+     */
     private void execDelayClass() throws Throwable {
         for (DelayClassDefinitionWrap wrap : this.delayExecClassesWrap) {
             this.execDelayClass(wrap);
         }
     }
 
+    /**
+     * 执行一个稍后执行class
+     *
+     * @Author t13max
+     * @Date 15:59 2025/3/19
+     */
     private void execDelayClass(DelayClassDefinitionWrap wrap) throws Throwable {
+
         Class<?> clazz = wrap.getClazz();
 
         try {
             Method method = clazz.getMethod("exec");
             method.invoke(null);
+            //执行完后 恢复成老的class
             byte[] bytes = wrap.getBytes();
             if (bytes != null) {
                 this.inst.redefineClasses(new ClassDefinition(clazz, bytes));
@@ -197,16 +246,15 @@ public abstract class HotDeployer {
      * @Date 18:01 2024/8/12
      */
     private boolean defineNewClass(String className, byte[] bytes) {
-        ClassLoader var3 = this.getClass().getClassLoader();
-        Method var4 = ClassUtil.getMethod(var3.getClass(), "defineClass", new Class[]{String.class, byte[].class, Integer.TYPE, Integer.TYPE});
-        if (var4 == null) {
+        ClassLoader classLoader = this.getClass().getClassLoader();
+        Method defineClassMethod = ClassUtil.getMethod(classLoader.getClass(), "defineClass", new Class[]{String.class, byte[].class, Integer.TYPE, Integer.TYPE});
+        if (defineClassMethod == null) {
             Log.agent.error("ClassLoader未找到defineClass方法");
             return false;
         } else {
-            var4.setAccessible(true);
-
+            defineClassMethod.setAccessible(true);
             try {
-                var4.invoke(var3, className, bytes, 0, bytes.length);
+                defineClassMethod.invoke(classLoader, className, bytes, 0, bytes.length);
                 return true;
             } catch (Throwable var6) {
                 Log.agent.error("ClassLoader.defineClass执行错误", var6);
