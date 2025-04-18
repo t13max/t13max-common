@@ -47,7 +47,7 @@ public class ExcelUtils {
     public static Object convertData(Object value, String dataType) throws TemplateException {
         DataTypeEnum type = DataTypeEnum.of(dataType);
         if (type == null) {
-            throw new TemplateException("未知的数据类型");
+            throw new TemplateException("未知的数据类型, dataType="+dataType);
         }
 
         String str = String.valueOf(value);
