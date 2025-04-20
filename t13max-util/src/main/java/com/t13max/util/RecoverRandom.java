@@ -97,6 +97,10 @@ public class RecoverRandom {
         return RandomUtil.getRandomByWeight(random, map);
     }
 
+    public int getRandomByWeight(List<Integer> list) {
+        return RandomUtil.getRandomByWeight(random, list);
+    }
+
     public int getRandomByWeight(int[] array) {
         return RandomUtil.getRandomByWeight(random, array);
     }

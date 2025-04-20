@@ -300,6 +300,27 @@ public class RandomUtil {
         return getRandomByWeight(ThreadLocalRandom.current(), map);
     }
 
+    public static int getRandomByWeight(Random random, List<Integer> list) {
+        int max = 0;
+        List<Integer> idlist = new ArrayList<>();
+        List<Integer> probabilitylist = new ArrayList<>();
+
+        for (int i = 0; i < list.size(); i++) {
+            int weight = list.get(i);
+            idlist.add(i);
+            max = weight + max; //权重值
+            probabilitylist.add(max);
+        }
+
+        int ranNumByInterval = RandomUtil.nextInt(random,1, max);
+        for (int x = 0; x < probabilitylist.size(); x++) {
+            if (probabilitylist.get(x) >= ranNumByInterval) {
+                return idlist.get(x);
+            }
+        }
+        return -1;
+    }
+
     public static int getRandomByWeight(Random random, int[] array) {
         int max = 0;
         List<Integer> idlist = new ArrayList<>();
