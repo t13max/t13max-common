@@ -5,9 +5,11 @@ import lombok.Setter;
 
 import java.util.Map;
 
-/**
- * @Author: zl1030
- * @Date: 2019/4/24
+/** 
+ * 
+ *        
+ * @Author t13max
+ * @Date 13:56 2025/4/21
  */
 @Data
 public class Status {
