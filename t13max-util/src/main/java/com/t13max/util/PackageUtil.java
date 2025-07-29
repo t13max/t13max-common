@@ -27,35 +27,107 @@ public class PackageUtil {
      * @Author t13max
      * @Date 14:18 2024/5/23
      */
-    public static Set<Class<?>> scan(String packageName, ClassLoader classLoader) {
+    public static Set<Class<?>> scan(String packagePattern, ClassLoader classLoader) {
         if (classLoader == null) {
             classLoader = Thread.currentThread().getContextClassLoader();
         }
         Set<Class<?>> classes = new LinkedHashSet<>();
+
         boolean recursive = true;
-        String packageDirName = packageName.replace('.', '/');
-        Enumeration<URL> dirs;
+
+        if (packagePattern.contains("*")) {
+            // 拆分 prefix 和 suffix
+            String prefix = packagePattern.substring(0, packagePattern.indexOf('*')).replace('.', '/');
+            String suffix = packagePattern.substring(packagePattern.indexOf('*') + 1).replace('.', '/');
+
+            try {
+                Enumeration<URL> dirs = classLoader.getResources(prefix);
+                while (dirs.hasMoreElements()) {
+                    URL url = dirs.nextElement();
+                    if ("file".equals(url.getProtocol())) {
+                        String filePath = URLDecoder.decode(url.getFile(), "UTF-8");
+                        findClassesWithWildcard(prefix, suffix, filePath, classes, classLoader);
+                    } else if ("jar".equals(url.getProtocol())) {
+                        findClassesWithWildcardInJar(url, prefix, suffix, classes, classLoader);
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            String packageDirName = packagePattern.replace('.', '/');
+            try {
+                Enumeration<URL> dirs = classLoader.getResources(packageDirName);
+                while (dirs.hasMoreElements()) {
+                    URL url = dirs.nextElement();
+                    if ("file".equals(url.getProtocol())) {
+                        String filePath = URLDecoder.decode(url.getFile(), "UTF-8");
+                        findAndAddClassesInPackageByFile(packagePattern, filePath, recursive, classes);
+                    } else if ("jar".equals(url.getProtocol())) {
+                        findAndAddClassesInPackageByJar(classLoader, url, packageDirName, packagePattern, recursive, classes);
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return classes;
+    }
+
+    private static void findClassesWithWildcard(String prefix, String suffix, String filePath, Set<Class<?>> classes, ClassLoader classLoader) {
+        File dir = new File(filePath);
+        if (!dir.exists() || !dir.isDirectory()) return;
+        File[] files = dir.listFiles();
+        if (files == null) {
+            return;
+        }
+        for (File subDir : files) {
+            if (!subDir.isDirectory()) continue;
+
+            // 拼接完整包路径
+            String middle = subDir.getName();
+            File targetDir = new File(subDir, suffix);
+            if (targetDir.exists() && targetDir.isDirectory()) {
+                File[] targetFiles = targetDir.listFiles();
+                if (targetFiles == null) {
+                    return;
+                }
+                for (File file : targetFiles) {
+                    if (file.getName().endsWith(".class")) {
+                        String className = prefix.replace('/', '.') + middle + suffix.replace('/', '.')
+                                + "." + file.getName().replace(".class", "");
+                        try {
+                            classes.add(Class.forName(className, true, classLoader));
+                        } catch (ClassNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private static void findClassesWithWildcardInJar(URL url, String prefix, String suffix, Set<Class<?>> classes, ClassLoader classLoader) {
         try {
-            dirs = classLoader.getResources(packageDirName);
-            while (dirs.hasMoreElements()) {
-                URL url = dirs.nextElement();
-                String protocol = url.getProtocol();
-                if (null != protocol) {
-                    switch (protocol) {
-                        case "file":
-                            String filePath = URLDecoder.decode(url.getFile(), "UTF-8");
-                            findAndAddClassesInPackageByFile(packageName, filePath, recursive, classes);
-                            break;
-                        case "jar":
-                            findAndAddClassesInPackageByJar(classLoader, url, packageDirName, packageName, recursive, classes);
-                            break;
+            JarFile jar = ((JarURLConnection) url.openConnection()).getJarFile();
+            Enumeration<JarEntry> entries = jar.entries();
+
+            while (entries.hasMoreElements()) {
+                JarEntry entry = entries.nextElement();
+                String name = entry.getName();
+                if (name.endsWith(".class") && name.startsWith(prefix) && name.contains(suffix)) {
+                    String className = name.replace('/', '.').replace(".class", "");
+                    try {
+                        classes.add(Class.forName(className, true, classLoader));
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
                     }
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return classes;
     }
 
     /**
@@ -154,4 +226,8 @@ public class PackageUtil {
         }
     }
 
+    public static void main(String[] args) {
+        Set<Class<?>> scan = scan("com.t13max.util.*.rpc");
+        System.out.println(scan);
+    }
 }
