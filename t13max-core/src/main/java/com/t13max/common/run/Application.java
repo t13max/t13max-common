@@ -11,6 +11,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.LockSupport;
 
 /**
@@ -27,7 +28,7 @@ public class Application {
     //实例名
     private static String instanceName;
     //运行状态
-    private static volatile boolean running;
+    private static AtomicBoolean running = new AtomicBoolean();
 
     /**
      * Application启动
@@ -40,7 +41,7 @@ public class Application {
         try {
 
             //防止重复启动
-            if (running) return;
+            if (!running.compareAndSet(false,true)) return;
             //日志级别
             checkLogLevel();
             //加载配置
@@ -54,7 +55,6 @@ public class Application {
             //添加停服钩子 manager shutdown
             addShutdownHook(ManagerBase::shutdown);
             //启动完成
-            running = true;
         } catch (Exception e) {
             //遇到任何异常 直接退出
             e.printStackTrace();
@@ -74,7 +74,7 @@ public class Application {
         try {
 
             //防止重复启动
-            if (running) return;
+            if (running.compareAndSet(false,true)) return;
             //日志级别
             checkLogLevel();
             //加载配置
@@ -82,7 +82,6 @@ public class Application {
             //执行外部逻辑
             applier.apply();
             //启动完成
-            running = true;
         } catch (Exception e) {
             //遇到任何异常 直接退出
             e.printStackTrace();
@@ -96,13 +95,12 @@ public class Application {
         try {
 
             //防止重复启动
-            if (running) return;
+            if (running.compareAndSet(false,true)) return;
             //日志级别
             checkLogLevel();
             //执行外部逻辑
             applier.apply();
             //启动完成
-            running = true;
         } catch (Exception e) {
             //遇到任何异常 直接退出
             e.printStackTrace();
