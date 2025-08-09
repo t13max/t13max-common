@@ -16,7 +16,7 @@ import java.util.Map;
  */
 public abstract class TemplateHelper<T extends ITemplate> {
 
-    private final static String PATH_ENV = "TEMPLATE_PATH";
+    public final static String PATH_ENV = "TEMPLATE_PATH";
 
     protected String fileName;
 
@@ -115,6 +115,9 @@ public abstract class TemplateHelper<T extends ITemplate> {
         TEMP_DATA_MAP = new HashMap<>();
         if (path == null) {
             path = System.getenv(PATH_ENV);
+        }
+        if (path == null) {
+            path = System.getProperty(PATH_ENV);
         }
         List<T> iTemplates;
         if (path == null) {
