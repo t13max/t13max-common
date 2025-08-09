@@ -17,17 +17,24 @@
         <module>t13max-bot</module>
         <module>t13max-hotagent</module>
         <module>t13max-data</module>
-        <module>t13max-data/t13max-data-redis</module>
         <module>t13max-rpc</module>
-        <module>t13max-data/t13max-data-mongo</module>
-        <module>t13max-data/t13max-data-mysql</module>
+        <module>t13max-application</module>
     </modules>
 
     <properties>
         <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <t13max-common.version>1.0.1</t13max-common.version>
+        <t13max-ai.version>1.0.1</t13max-ai.version>
+        <t13max-application.version>1.0.1</t13max-application.version>
+        <t13max-bot.version>1.0.1</t13max-bot.version>
         <t13max-core.version>1.0.1</t13max-core.version>
+        <t13max-data.mongo.version>1.0.1</t13max-data.mongo.version>
+        <t13max-data.mysql.version>1.0.1</t13max-data.mysql.version>
+        <t13max-data.redis.version>1.0.1</t13max-data.redis.version>
+        <t13max-rpc.version>1.0.1</t13max-rpc.version>
+        <t13max-template.version>1.0.1</t13max-template.version>
+        <t13max-util.version>1.0.1</t13max-util.version>
 
         <junit.version>4.13.2</junit.version>
         <log4j.version>2.17.2</log4j.version>
@@ -42,7 +49,7 @@
         <easyexcel.version>3.0.5</easyexcel.version>
         <freemarker.version>2.3.31</freemarker.version>
         <fastjson.version>2.0.58</fastjson.version>
-        <netty.version>4.1.115.Final</netty.version>
+        <netty.version>4.1.118.Final</netty.version>
         <protobuf.version>4.28.2</protobuf.version>
         <snakeyaml.version>2.2</snakeyaml.version>
         <redission.version>3.15.6</redission.version>
@@ -73,15 +80,20 @@
             <dependency>
                 <groupId>com.t13max.common</groupId>
                 <artifactId>t13max-util</artifactId>
-                <version>${t13max-core.version}</version>
+                <version>${t13max-util.version}</version>
             </dependency>
             <!--t13max-ai-->
             <dependency>
                 <groupId>com.t13max.common</groupId>
                 <artifactId>t13max-ai</artifactId>
-                <version>${t13max-core.version}</version>
+                <version>${t13max-ai.version}</version>
             </dependency>
-
+            <!--t13max-application-->
+            <dependency>
+                <groupId>com.t13max.common</groupId>
+                <artifactId>t13max-application</artifactId>
+                <version>${t13max-application.version}</version>
+            </dependency>
             <!--单元测试-->
             <dependency>
                 <groupId>junit</groupId>

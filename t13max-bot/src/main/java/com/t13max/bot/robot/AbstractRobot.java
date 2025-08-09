@@ -1,7 +1,6 @@
 package com.t13max.bot.robot;
 
 import com.google.protobuf.AbstractMessage;
-import com.t13max.ai.fsm.IState;
 import com.t13max.bot.consts.BotStatusEnum;
 import com.t13max.bot.interfaces.IBot;
 import com.t13max.bot.interfaces.IBusiness;
@@ -14,8 +13,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;

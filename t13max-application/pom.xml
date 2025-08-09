@@ -7,9 +7,11 @@
         <version>1.0.1</version>
     </parent>
 
-    <name>t13max-bot</name>
-    <url>https://github.com/T13MAX</url>
-    <artifactId>t13max-bot</artifactId>
+    <artifactId>t13max-application</artifactId>
+    <packaging>jar</packaging>
+
+    <name>t13max-application</name>
+    <url>http://maven.apache.org</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -18,19 +20,24 @@
     <dependencies>
         <dependency>
             <groupId>com.t13max.common</groupId>
-            <artifactId>t13max-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.t13max.common</groupId>
-            <artifactId>t13max-ai</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.t13max.common</groupId>
             <artifactId>t13max-util</artifactId>
         </dependency>
         <dependency>
             <groupId>com.t13max.common</groupId>
-            <artifactId>t13max-application</artifactId>
+            <artifactId>t13max-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
         </dependency>
     </dependencies>
 </project>

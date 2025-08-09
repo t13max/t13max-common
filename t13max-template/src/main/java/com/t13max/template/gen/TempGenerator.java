@@ -3,7 +3,6 @@ package com.t13max.template.gen;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.t13max.common.run.Application;
 import com.t13max.common.util.Log;
 import com.t13max.template.enums.DataTypeEnum;
 import com.t13max.template.exception.TemplateException;
@@ -29,14 +28,12 @@ public class TempGenerator {
 
     public static void main(String[] args) throws Exception {
 
-        Application.run(args, () -> {
-            TempGenerator tempGenerator = new TempGenerator();
-            try {
-                tempGenerator.run();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
+        TempGenerator tempGenerator = new TempGenerator();
+        try {
+            tempGenerator.run();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
     }
 

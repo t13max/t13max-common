@@ -3,17 +3,17 @@
 
 ### 模块
 
-| 模块                | 名称      | 描述                     |  
-|:------------------|:--------|:-----------------------|
-| [t13max-ai]       | AI      | ai包 行为树 状态机等           |
-| [t13max-core]     | core核心包 | 最基础的一些核心代码             |
-| [t13max-util]     | 工具类     |                        |
-| [t13max-template] | 打表读表    | 自动生成java实体类 打json文件    |
-| [t13max-bot]      | 机器人模块   | 自动化机器人 压测,自动执行业务模拟真实玩家 |
-| [t13max-data]     | 数据模块    | Redis/MongoDB          |
-| [t13max-rpc]      | Rpc     | Rpc基础                  |
-| [t13max-hotagent] | 热更      | 热更相关                   |
-| [t13max-dms]      | 自动内存管理  | 自动内存管理 事务 回滚 自动入库      |
+| 模块                   | 名称       | 描述                     |  
+|:---------------------|:---------|:-----------------------|
+| [t13max-ai]          | AI       | ai包 行为树 状态机等           |
+| [t13max-application] | t13max应用 | 自动配置                   |
+| [t13max-core]        | core核心包  | 最基础的一些核心代码             |
+| [t13max-util]        | 工具类      |                        |
+| [t13max-template]    | 打表读表     | 自动生成java实体类 打json文件    |
+| [t13max-bot]         | 机器人模块    | 自动化机器人 压测,自动执行业务模拟真实玩家 |
+| [t13max-data]        | 数据模块     | Redis/MongoDB          |
+| [t13max-rpc]         | Rpc      | Rpc基础                  |
+| [t13max-hotagent]    | 热更       | 热更相关                   |
 
 ### 备忘录
 

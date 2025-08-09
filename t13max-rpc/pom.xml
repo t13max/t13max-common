@@ -23,6 +23,10 @@
             <groupId>com.t13max.common</groupId>
             <artifactId>t13max-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.t13max.common</groupId>
+            <artifactId>t13max-application</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>com.alipay.sofa</groupId>

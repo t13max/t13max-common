@@ -1,7 +1,6 @@
 package com.t13max.common.action;
 
-import com.t13max.common.config.ActionConfig;
-import com.t13max.common.run.Application;
+import com.t13max.common.consts.SystemPropertyKey;
 import com.t13max.common.util.Log;
 import com.t13max.util.ThreadNameFactory;
 
@@ -23,11 +22,11 @@ public class ActionExecutor {
     private boolean isRunning = true;
 
     public static ActionExecutor createExecutor() {
-        ActionConfig action = Application.config().getAction();
+
         ActionExecutor executor = new ActionExecutor();
-        executor.corePoolSize = action.getCore();
-        executor.maxPoolSize = action.getMax();
-        executor.name = action.getName();
+        executor.corePoolSize = Integer.parseInt(System.getProperty(SystemPropertyKey.ACTION_CORE_POOL_SIZE, "1"));
+        executor.maxPoolSize = Integer.parseInt(System.getProperty(SystemPropertyKey.ACTION_MAX_POOL_SIZE, "1"));
+        executor.name = System.getProperty(SystemPropertyKey.ACTION_EXECUTOR_NAME, "DEF_ACTION_EXECUTOR");
         executor.init();
         return executor;
     }

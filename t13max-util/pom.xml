@@ -17,6 +17,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <!--这里尽量不要加依赖 轻量-->
     <dependencies>
 
     </dependencies>

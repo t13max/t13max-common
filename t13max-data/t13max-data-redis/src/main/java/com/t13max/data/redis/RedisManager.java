@@ -17,7 +17,6 @@ import org.redisson.codec.JsonJacksonCodec;
 import org.redisson.config.Config;
 import org.redisson.config.SingleServerConfig;
 
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
