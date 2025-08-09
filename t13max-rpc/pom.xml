@@ -22,18 +22,15 @@
         <dependency>
             <groupId>com.t13max.common</groupId>
             <artifactId>t13max-core</artifactId>
-            <version>${t13max-core.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.alipay.sofa</groupId>
             <artifactId>sofa-rpc-all</artifactId>
-            <version>${sofa-rpc-all.version}</version>
         </dependency>
         <dependency>
             <groupId>net.jodah</groupId>
             <artifactId>failsafe</artifactId>
-            <version>${failsafe.version}</version>
         </dependency>
     </dependencies>
 </project>

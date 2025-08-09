@@ -20,7 +20,7 @@
         <module>t13max-data/t13max-data-redis</module>
         <module>t13max-rpc</module>
         <module>t13max-data/t13max-data-mongo</module>
-        <module>t13max-data/t13max-mysql</module>
+        <module>t13max-data/t13max-data-mysql</module>
     </modules>
 
     <properties>
@@ -41,7 +41,7 @@
         <dom4j.version>2.1.4</dom4j.version>
         <easyexcel.version>3.0.5</easyexcel.version>
         <freemarker.version>2.3.31</freemarker.version>
-        <fastjson.version>2.0.54</fastjson.version>
+        <fastjson.version>2.0.58</fastjson.version>
         <netty.version>4.1.115.Final</netty.version>
         <protobuf.version>4.28.2</protobuf.version>
         <snakeyaml.version>2.2</snakeyaml.version>
@@ -61,28 +61,163 @@
             </plugin>
         </plugins>
     </build>
+    <dependencyManagement>
+        <dependencies>
+            <!--t13max 核心包-->
+            <dependency>
+                <groupId>com.t13max.common</groupId>
+                <artifactId>t13max-core</artifactId>
+                <version>${t13max-core.version}</version>
+            </dependency>
+            <!--t13max 工具包-->
+            <dependency>
+                <groupId>com.t13max.common</groupId>
+                <artifactId>t13max-util</artifactId>
+                <version>${t13max-core.version}</version>
+            </dependency>
+            <!--t13max-ai-->
+            <dependency>
+                <groupId>com.t13max.common</groupId>
+                <artifactId>t13max-ai</artifactId>
+                <version>${t13max-core.version}</version>
+            </dependency>
+
+            <!--单元测试-->
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <!--log4j的api-->
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-api</artifactId>
+                <version>${log4j.version}</version>
+            </dependency>
+            <!--log4j的核心包-->
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-core</artifactId>
+                <version>${log4j.version}</version>
+            </dependency>
+            <!--lombok-->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+            </dependency>
+            <!--easyexcel-->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>easyexcel</artifactId>
+                <version>${easyexcel.version}</version>
+            </dependency>
+            <!--freemarker-->
+            <dependency>
+                <groupId>org.freemarker</groupId>
+                <artifactId>freemarker</artifactId>
+                <version>${freemarker.version}</version>
+            </dependency>
+            <!--fastjson-->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>${fastjson.version}</version>
+            </dependency>
+            <!--sofa-Rpc-->
+            <dependency>
+                <groupId>com.alipay.sofa</groupId>
+                <artifactId>sofa-rpc-all</artifactId>
+                <version>${sofa-rpc-all.version}</version>
+            </dependency>
+            <!--failsafe-->
+            <dependency>
+                <groupId>net.jodah</groupId>
+                <artifactId>failsafe</artifactId>
+                <version>${failsafe.version}</version>
+            </dependency>
+            <!--netty-->
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-all</artifactId>
+                <version>${netty.version}</version>
+            </dependency>
+            <!--protobuf-->
+            <dependency>
+                <groupId>com.google.protobuf</groupId>
+                <artifactId>protobuf-java</artifactId>
+                <version>${protobuf.version}</version>
+            </dependency>
+            <!--yml-->
+            <dependency>
+                <groupId>org.yaml</groupId>
+                <artifactId>snakeyaml</artifactId>
+                <version>${snakeyaml.version}</version>
+            </dependency>
+            <!--dom4j-->
+            <dependency>
+                <groupId>org.dom4j</groupId>
+                <artifactId>dom4j</artifactId>
+                <version>${dom4j.version}</version>
+            </dependency>
+            <!--groovy-->
+            <dependency>
+                <groupId>org.codehaus.groovy</groupId>
+                <artifactId>groovy</artifactId>
+                <version>${groovy.version}</version>
+            </dependency>
+            <!--morphia-->
+            <dependency>
+                <groupId>dev.morphia.morphia</groupId>
+                <artifactId>morphia-core</artifactId>
+                <version>${morpgia.version}</version>
+            </dependency>
+            <!--mongodb-->
+            <dependency>
+                <groupId>org.mongodb</groupId>
+                <artifactId>mongodb-driver-sync</artifactId>
+                <version>${mongodb.version}</version>
+            </dependency>
+            <!--javassist-->
+            <dependency>
+                <groupId>org.javassist</groupId>
+                <artifactId>javassist</artifactId>
+                <version>${javassist.version}</version>
+            </dependency>
+            <!--redisson-->
+            <dependency>
+                <groupId>org.redisson</groupId>
+                <artifactId>redisson</artifactId>
+                <version>${redission.version}</version>
+            </dependency>
+            <!--mybatis-->
+            <dependency>
+                <groupId>org.mybatis</groupId>
+                <artifactId>mybatis</artifactId>
+                <version>${mybatis.version}</version>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
-            <version>${log4j.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <version>${log4j.version}</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>${lombok.version}</version>
         </dependency>
     </dependencies>
 </project>
