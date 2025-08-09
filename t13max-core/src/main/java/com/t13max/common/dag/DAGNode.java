@@ -22,8 +22,8 @@ public class DAGNode<T extends Comparable<T>> implements Comparable<DAGNode<T> >
 	DAGNode(T obj, DAG<T> dag) {
 		super();
 		this.obj = obj;
-		prevs=new java.util.ArrayList<DAGNode<T> >();
-		nexts=new java.util.ArrayList<DAGNode<T> >();
+		prevs=new java.util.ArrayList<>();
+		nexts=new java.util.ArrayList<>();
 		this.dag=dag;
 	}
 	

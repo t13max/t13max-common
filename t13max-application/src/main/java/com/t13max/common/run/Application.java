@@ -1,6 +1,7 @@
 package com.t13max.common.run;
 
 import com.t13max.common.config.BaseConfig;
+import com.t13max.common.manager.Manager;
 import com.t13max.common.manager.ManagerBase;
 import com.t13max.common.net.AbstractServer;
 import com.t13max.common.util.Log;
@@ -46,7 +47,7 @@ public class Application {
             //加载配置
             config = BaseConfig.loadConfig(clazz);
             //初始化所有manager
-            ManagerBase.initAllManagers();
+            Manager.init();
             //实例名
             instanceName = config.getInstanceName();
             //启动Netty服务器
