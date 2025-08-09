@@ -1,5 +1,8 @@
 package com.t13max.common.dag;
 
+import java.util.LinkedList;
+import java.util.TreeSet;
+
 /**
  * 有向无圈图
  *
@@ -8,14 +11,14 @@ package com.t13max.common.dag;
  */
 public class DAG<T extends Comparable<T>> {
 
-    public static interface IWalk<T extends Comparable<T>> {
-        public void onNode(DAGNode<T> n);
+    public interface IWalk<T extends Comparable<T>> {
+        void onNode(DAGNode<T> n);
     }
 
-    private final java.util.TreeSet<DAGNode<T>> nodes;
+    private final TreeSet<DAGNode<T>> nodes;
 
     public DAG() {
-        nodes = new java.util.TreeSet<>();
+        nodes = new TreeSet<>();
     }
 
     /**
@@ -54,13 +57,13 @@ public class DAG<T extends Comparable<T>> {
      * @Since: 17:09 2025/8/9
      */
     public void walk(IWalk<T> w) {
-        final java.util.LinkedList<DAGNode<T>> walked = new java.util.LinkedList<>();
+        final LinkedList<DAGNode<T>> walked = new LinkedList<>();
         for (final DAGNode<T> n : nodes) {
             if (walked.contains(n))
                 continue;
             DAGNode<T> curr = n;
             while (true) {
-                final java.util.LinkedList<DAGNode<T>> parents = new java.util.LinkedList<>();
+                final LinkedList<DAGNode<T>> parents = new LinkedList<>();
                 for (int i = 0; i != curr.getPrevs().size(); ) {
                     final DAGNode<T> p = curr.getPrevs().get(i);
                     if (walked.contains(p)) {

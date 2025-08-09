@@ -25,8 +25,8 @@ public abstract class ManagerBase implements Comparable<ManagerBase> {
     // manager依赖图
     private final static DAG<ManagerBase> DAG = new DAG<>();
 
-    //初始化标记
-    private final static AtomicBoolean INIT = new AtomicBoolean();
+    //初始化标记 保证总入口顺序 且禁止多次调用
+    private final static AtomicBoolean GLOBAL_INIT = new AtomicBoolean();
 
     //顺序 越小越先执行
     protected int order;
@@ -104,7 +104,7 @@ public abstract class ManagerBase implements Comparable<ManagerBase> {
      */
     static void initAllManagers() {
 
-        if (!INIT.compareAndSet(false, true)) {
+        if (!GLOBAL_INIT.compareAndSet(false, true)) {
             Log.MANAGER.error("无法initAllManagers, 已经INIT!");
             return;
         }
@@ -112,10 +112,10 @@ public abstract class ManagerBase implements Comparable<ManagerBase> {
             ManagerBase managerBase = n.getObj();
             try {
                 // 初始化
-                managerBase.baseInit();
-                Log.MANAGER.debug("模块{}初始化完成", managerBase.getClass().getName());
+                managerBase.init();
+                Log.MANAGER.info("模块 {} 初始化完成", managerBase.getClass().getName());
             } catch (final Exception ex) {
-                Log.MANAGER.error("模块{}启动失败", managerBase.getClass().getName(), ex);
+                Log.MANAGER.error("模块 {} 启动失败", managerBase.getClass().getName(), ex);
                 throw new CommonException(ex);
             }
         });
@@ -150,33 +150,28 @@ public abstract class ManagerBase implements Comparable<ManagerBase> {
     }
 
     /**
-     * 基类的初始化
+     * 初始化
      *
      * @Author: t13max
      * @Since: 17:17 2025/8/9
      */
-    private void baseInit() {
-        if (INIT.get()) {
-            Log.MANAGER.error("无法init, 已经INIT!");
-            return;
-        }
-        this.init();
-    }
-
     protected void init() {
 
     }
 
+    /**
+     * TreeSet会排序去重
+     *
+     * @Author: t13max
+     * @Since: 17:55 2025/8/9
+     */
     @Override
     public int compareTo(ManagerBase o) {
-        //都小于0 根据名字字典排
-        if (this.order < 0 && o.order < 0) {
+        if (this.order == 0 && o.order == 0) {
             return this.getClass().getName().compareTo(o.getClass().getName());
         }
-        //负号排后面
-        if (this.order < 0) return 1;
-        if (o.order < 0) return -1;
-        //数字越小越靠前
+        if (this.order == 0) return 1;
+        if (o.order == 0) return -1;
         return Integer.compare(this.order, o.order);
     }
 
@@ -187,7 +182,7 @@ public abstract class ManagerBase implements Comparable<ManagerBase> {
      * @Author: t13max
      * @Since: 17:18 2025/8/9
      */
-    public void setOrder(int order) {
+    protected void setOrder(int order) {
         if (order != -1) {
             return;
         }
