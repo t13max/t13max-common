@@ -35,7 +35,7 @@ public class ActionQueue {
                 try {
                     action.run();
                 } catch (Throwable e) {
-                    Log.action.error("ActionQueue.execute error jobName:{} exception:{}", jobName, e.getMessage());
+                    Log.ACTION.error("ActionQueue.execute error jobName:{} exception:{}", jobName, e.getMessage());
                     e.printStackTrace();
                 }
             }

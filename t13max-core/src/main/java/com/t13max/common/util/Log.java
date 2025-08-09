@@ -11,8 +11,9 @@ import org.apache.logging.log4j.Logger;
  */
 public class Log {
     //玩家业务线程池
-    public static Logger APP = LogManager.getLogger("APP");
-    public static Logger action = LogManager.getLogger("ACTION");
-    public static Logger manager = LogManager.getLogger("MANAGER");
-    public static Logger msg = LogManager.getLogger("MESSAGE");
+    public final static Logger APP = LogManager.getLogger("APP");
+    public final static Logger ACTION = LogManager.getLogger("ACTION");
+    public final static Logger MANAGER = LogManager.getLogger("MANAGER");
+    public final static Logger MSG = LogManager.getLogger("MESSAGE");
+    public final static Logger TEMPLATE = LogManager.getLogger("TEMPLATE");
 }

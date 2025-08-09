@@ -3,9 +3,9 @@ package com.t13max.template.manager;
 
 import com.t13max.common.exception.CommonException;
 import com.t13max.common.manager.ManagerBase;
+import com.t13max.common.util.Log;
 import com.t13max.template.exception.TemplateException;
 import com.t13max.template.helper.TemplateHelper;
-import com.t13max.template.util.Log;
 import com.t13max.util.PackageUtil;
 
 import java.lang.reflect.InvocationTargetException;
@@ -23,7 +23,7 @@ import java.util.Set;
  */
 public class TemplateManager extends ManagerBase {
 
-    private Map<String, TemplateHelper<?>> helperMap = new HashMap<>();
+    private final Map<String, TemplateHelper<?>> helperMap = new HashMap<>();
 
     /**
      * 获取当前实例对象
@@ -118,13 +118,13 @@ public class TemplateManager extends ManagerBase {
     public boolean reload(String name) {
         TemplateHelper<?> templateHelper = helperMap.get(name);
         if (templateHelper == null) {
-            Log.template.error("reload失败, name不存在, name={}", name);
+            Log.TEMPLATE.error("reload失败, templateHelper为空, name={}", name);
             return false;
         }
         try {
             templateHelper.reload();
         } catch (Exception e) {
-            Log.template.error("reload失败, error={}", e.getMessage());
+            Log.TEMPLATE.error("reload失败, name={}",name, e);
             return false;
         }
         return true;
@@ -150,12 +150,13 @@ public class TemplateManager extends ManagerBase {
             }
             helperMap.values().forEach(TemplateHelper::transfer);
         } catch (Exception e) {
-            Log.template.error("reload失败, error={}", e.getMessage());
+            Log.TEMPLATE.error("reloadWithPath失败, path={}}", path,e);
             return false;
         }
         return true;
     }
 
+    @SuppressWarnings("unchecked")
     public <T extends TemplateHelper<?>> T helper(Class<T> clazz) {
         return (T) this.helperMap.get(clazz.getName());
     }

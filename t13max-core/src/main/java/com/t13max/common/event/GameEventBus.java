@@ -35,7 +35,7 @@ public class GameEventBus extends ManagerBase {
                 asyncExecutor.shutdownNow();
                 shutdown = asyncExecutor.awaitTermination(2, TimeUnit.SECONDS);
                 if (!shutdown) {
-                    Log.manager.error("GameEventBus, asyncExecutor停不下来啦");
+                    Log.MANAGER.error("GameEventBus, asyncExecutor停不下来啦");
                 }
             }
         } catch (InterruptedException e) {

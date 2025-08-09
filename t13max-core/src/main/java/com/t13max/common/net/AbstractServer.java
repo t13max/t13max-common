@@ -1,6 +1,5 @@
 package com.t13max.common.net;
 
-import com.t13max.common.config.BaseConfig;
 import com.t13max.common.config.NettyConfig;
 import com.t13max.common.exception.CommonException;
 import com.t13max.common.run.Application;
@@ -52,7 +51,7 @@ public abstract class AbstractServer implements INettyServer {
 
         InetSocketAddress address = new InetSocketAddress(nettyConfig.getPort());
         channel = bootstrap.bind(address).sync().channel();
-        Log.msg.info("netty server bind on {} success!", address);
+        Log.MSG.info("netty server bind on {} success!", address);
 
     }
 
@@ -78,11 +77,11 @@ public abstract class AbstractServer implements INettyServer {
         if (nettyConfig.isUseEpoll()) {
             this.bossGroup = new EpollEventLoopGroup(1, new ThreadNameFactory("epoll-boss"));
             this.workerGroup = new EpollEventLoopGroup(threadNum, new ThreadNameFactory("epoll-worker"));
-            Log.msg.info("use EpollEventLoopGroup.....");
+            Log.MSG.info("use EpollEventLoopGroup.....");
         } else {
             this.bossGroup = new NioEventLoopGroup(1, new ThreadNameFactory("nio-boss"));
             this.workerGroup = new NioEventLoopGroup(threadNum, new ThreadNameFactory("nio-worker"));
-            Log.msg.info("use NioEventLoopGroup.....");
+            Log.MSG.info("use NioEventLoopGroup.....");
         }
     }
 
@@ -96,7 +95,7 @@ public abstract class AbstractServer implements INettyServer {
     public void shutdown() {
         try {
 
-            Log.msg.info("netty shutdown begin!");
+            Log.MSG.info("netty shutdown begin!");
 
             if (null != channel) {
                 ChannelFuture f = channel.close();
@@ -112,7 +111,7 @@ public abstract class AbstractServer implements INettyServer {
             }
         }
 
-        Log.msg.info("NettyServer shutdown success!");
+        Log.MSG.info("NettyServer shutdown success!");
     }
 
     /**
@@ -134,13 +133,13 @@ public abstract class AbstractServer implements INettyServer {
         ServerClazz annotation = clazz.getAnnotation(ServerClazz.class);
 
         if (annotation == null) {
-            Log.msg.info("不启动监听...");
+            Log.MSG.info("不启动监听...");
             return;
         }
 
         Class<? extends INettyServer> serverClazz = annotation.serverClazz();
         if (serverClazz == null) {
-            Log.msg.info("不启动监听...");
+            Log.MSG.info("不启动监听...");
             return;
         }
 

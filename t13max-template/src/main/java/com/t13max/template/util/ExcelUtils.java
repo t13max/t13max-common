@@ -2,6 +2,7 @@ package com.t13max.template.util;
 
 import com.alibaba.excel.metadata.data.ReadCellData;
 import com.alibaba.excel.util.StringUtils;
+import com.t13max.common.util.Log;
 import com.t13max.template.enums.DataTypeEnum;
 import com.t13max.template.exception.TemplateException;
 import com.t13max.util.StringUtil;
@@ -11,7 +12,6 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
-import java.util.Collections;
 
 /**
  * @author: t13max
@@ -89,8 +89,7 @@ public class ExcelUtils {
                 }
             }
         } catch (Exception e) {
-            Log.template.error("value={}", value);
-            e.printStackTrace();
+            Log.TEMPLATE.error("转换出错, value={}", value,e);
             throw new TemplateException("数据解析出错");
         }
     }

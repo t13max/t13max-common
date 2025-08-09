@@ -3,11 +3,10 @@ package com.t13max.template.listener;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.metadata.data.ReadCellData;
 import com.alibaba.excel.read.listener.ReadListener;
-import com.t13max.template.exception.TemplateException;
+import com.t13max.common.util.Log;
 import com.t13max.template.gen.ExcelData;
 import com.t13max.template.gen.GenerateConfig;
 import com.t13max.template.gen.SheetData;
-import com.t13max.template.util.Log;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -28,7 +27,7 @@ public class TemplateReadListener implements ReadListener<LinkedHashMap<Integer,
 
     @Override
     public void onException(Exception exception, AnalysisContext context) throws Exception {
-        Log.template.error("{}->{}解析出错, error={}", excelData.getExcelName(), context.readSheetHolder().getSheetName(), exception.getMessage());
+        Log.TEMPLATE.error("{}->{}解析出错, error={}", excelData.getExcelName(), context.readSheetHolder().getSheetName(), exception.getMessage());
         ReadListener.super.onException(exception, context);
     }
 
@@ -49,7 +48,7 @@ public class TemplateReadListener implements ReadListener<LinkedHashMap<Integer,
         final String sheetName = context.readSheetHolder().getSheetName();
         final SheetData sheetData = excelData.getSheetDataMap().get(sheetName);
         if (sheetData == null) {
-            Log.template.error("未找到Sheet, Sheet表内容生成失败, sheetName = {}", context.readSheetHolder().getSheetName());
+            Log.TEMPLATE.error("未找到Sheet, Sheet表内容生成失败, sheetName = {}", context.readSheetHolder().getSheetName());
             return;
         }
         sheetData.processDataSheet(rowMap, context);
@@ -57,6 +56,6 @@ public class TemplateReadListener implements ReadListener<LinkedHashMap<Integer,
 
     @Override
     public void doAfterAllAnalysed(AnalysisContext analysisContext) {
-        Log.template.info("{}处理完毕, 共有{}个sheet", excelData.getExcelName(), excelData.getSheetDataMap().size());
+        Log.TEMPLATE.info("{}处理完毕, 共有{}个sheet", excelData.getExcelName(), excelData.getSheetDataMap().size());
     }
 }

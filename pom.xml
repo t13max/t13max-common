@@ -21,7 +21,6 @@
         <module>t13max-rpc</module>
         <module>t13max-data/t13max-data-mongo</module>
         <module>t13max-data/t13max-mysql</module>
-        <module>t13max-msg</module>
     </modules>
 
     <properties>

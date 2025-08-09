@@ -3,11 +3,10 @@ package com.t13max.template.util;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.t13max.common.exception.CommonException;
+import com.t13max.common.util.Log;
 import com.t13max.template.ITemplate;
 import com.t13max.util.TextUtil;
 import lombok.experimental.UtilityClass;
-import lombok.extern.log4j.Log4j2;
-import org.apache.poi.ss.formula.functions.T;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -23,7 +22,7 @@ public class JsonUtils {
             String string = TextUtil.readOutText(fileName);
             iTemplates = JSON.parseArray(string, clazz);
         } catch (Exception e) {
-            throw new CommonException("读json转换对象失败, error={}" + e.getMessage());
+            throw new CommonException("读json转换对象失败, error=" + e.getMessage());
         }
         return iTemplates;
     }
@@ -36,7 +35,8 @@ public class JsonUtils {
             String string = TextUtil.readInJarText(fileName);
             iTemplates = JSON.parseArray(string, clazz);
         } catch (Exception e) {
-            throw new CommonException("读json转换对象失败, error={}" + e.getMessage());
+            e.printStackTrace();
+            throw new CommonException("读json转换对象失败, error=" + e.getMessage());
         }
 
         return iTemplates;
@@ -50,7 +50,7 @@ public class JsonUtils {
 
             InputStream resourceAsStream = org.apache.logging.log4j.core.util.JsonUtils.class.getClassLoader().getResourceAsStream(filaName);
             if (resourceAsStream == null) {
-                Log.template.error("JsonUtils, 加载{}失败", filaName);
+                Log.TEMPLATE.error("JsonUtils, 加载{}失败", filaName);
                 return new JSONArray();
             }
 
@@ -78,7 +78,7 @@ public class JsonUtils {
             String string = TextUtil.readOutText(fileName);
             result = JSON.parseObject(string, clazz);
         } catch (Exception e) {
-            throw new CommonException("读json转换对象失败, error={}" + e.getMessage());
+            throw new CommonException("读json转换对象失败, error=" + e.getMessage());
         }
         return result;
     }

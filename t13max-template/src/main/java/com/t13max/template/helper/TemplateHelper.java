@@ -1,9 +1,9 @@
 package com.t13max.template.helper;
 
+import com.t13max.common.util.Log;
 import com.t13max.template.ITemplate;
 import com.t13max.template.exception.TemplateException;
 import com.t13max.template.util.JsonUtils;
-import com.t13max.template.util.Log;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -75,16 +75,16 @@ public abstract class TemplateHelper<T extends ITemplate> {
 
     public final void reload(String path) {
 
-        Log.template.info("{}从新加载开始!", fileName);
+        Log.TEMPLATE.info("{}从新加载开始!", fileName);
 
         if (!this.doLoad(path)) {
             //打印日志 告知没有reload成功
-            Log.template.error("加载表失败! fileName={}", fileName);
+            Log.TEMPLATE.error("加载表失败! fileName={}", fileName);
         }
 
         if (!this.loadAfter()) {
             //打印日志 告知没有reload成功
-            Log.template.error("加载表失败! fileName={}", fileName);
+            Log.TEMPLATE.error("加载表失败! fileName={}", fileName);
         }
     }
 

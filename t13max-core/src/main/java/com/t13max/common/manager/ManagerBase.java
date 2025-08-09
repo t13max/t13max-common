@@ -114,9 +114,9 @@ public abstract class ManagerBase implements Comparable<ManagerBase> {
             try {
                 // 初始化
                 managerBase.init();
-                Log.manager.debug("模块{}初始化完成.", managerBase.getClass().getName());
+                Log.MANAGER.debug("模块{}初始化完成.", managerBase.getClass().getName());
             } catch (final Exception ex) {
-                Log.manager.error(String.format("模块%s启动失败", managerBase.getClass().getName()), ex);
+                Log.MANAGER.error(String.format("模块%s启动失败", managerBase.getClass().getName()), ex);
                 throw new CommonException(ex);
             }
         });
@@ -131,7 +131,7 @@ public abstract class ManagerBase implements Comparable<ManagerBase> {
             try {
                 manager.onShutdown();
             } catch (Exception e) {
-                Log.manager.info("Manager: {} shutdown failed, error: {}", manager.getClass().getCanonicalName(), e);
+                Log.MANAGER.info("Manager: {} shutdown failed, error: {}", manager.getClass().getCanonicalName(), e);
             }
         });
     }

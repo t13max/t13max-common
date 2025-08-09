@@ -1,7 +1,6 @@
 package com.t13max.common.action;
 
 import com.t13max.common.util.Log;
-import lombok.Setter;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -34,7 +33,7 @@ public abstract class Action implements Runnable {
             }
         } catch (Throwable e) {
             e.printStackTrace();
-            Log.action.error("Execute exception: " + getClazz().getName(), e);
+            Log.ACTION.error("Execute exception: " + getClazz().getName(), e);
         } finally {
             queue.checkout(this);
             done();

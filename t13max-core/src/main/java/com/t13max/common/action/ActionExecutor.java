@@ -1,7 +1,6 @@
 package com.t13max.common.action;
 
 import com.t13max.common.config.ActionConfig;
-import com.t13max.common.config.BaseConfig;
 import com.t13max.common.run.Application;
 import com.t13max.common.util.Log;
 import com.t13max.util.ThreadNameFactory;
@@ -45,7 +44,7 @@ public class ActionExecutor {
 
         executor = new ThreadPoolExecutor(corePoolSize, maxPoolSize, keepAliveTime, unit, workQueue, new ThreadNameFactory(this.name), handler);
 
-        Log.action.info("corePoolSize:{} maxPoolSize:{}", corePoolSize, maxPoolSize);
+        Log.ACTION.info("corePoolSize:{} maxPoolSize:{}", corePoolSize, maxPoolSize);
     }
 
     public int queueSize() {
