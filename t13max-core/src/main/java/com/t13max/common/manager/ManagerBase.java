@@ -19,6 +19,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public abstract class ManagerBase implements Comparable<ManagerBase> {
 
+    private final static int DEF_ORDER = 5000;
     //缓存所有manager
     private final static Map<String, ManagerBase> INSTANCES = new HashMap<>();
 
@@ -28,8 +29,8 @@ public abstract class ManagerBase implements Comparable<ManagerBase> {
     //初始化标记 保证总入口顺序 且禁止多次调用
     private final static AtomicBoolean GLOBAL_INIT = new AtomicBoolean();
 
-    //顺序 越小越先执行
-    protected int order;
+    //顺序 越小越先执行 默认5000 默认按照名字排序
+    protected int order = DEF_ORDER;
 
     static {
         initialize();
@@ -113,7 +114,7 @@ public abstract class ManagerBase implements Comparable<ManagerBase> {
             try {
                 // 初始化
                 managerBase.init();
-                Log.MANAGER.info("模块 {} 初始化完成", managerBase.getClass().getName());
+                Log.MANAGER.info("模块 {} 初始化完成, order={}", managerBase.getClass().getName(), managerBase.order);
             } catch (final Exception ex) {
                 Log.MANAGER.error("模块 {} 启动失败", managerBase.getClass().getName(), ex);
                 throw new CommonException(ex);
@@ -167,11 +168,9 @@ public abstract class ManagerBase implements Comparable<ManagerBase> {
      */
     @Override
     public int compareTo(ManagerBase o) {
-        if (this.order == 0 && o.order == 0) {
+        if (this.order == DEF_ORDER && o.order == DEF_ORDER) {
             return this.getClass().getName().compareTo(o.getClass().getName());
         }
-        if (this.order == 0) return 1;
-        if (o.order == 0) return -1;
         return Integer.compare(this.order, o.order);
     }
 
@@ -183,7 +182,7 @@ public abstract class ManagerBase implements Comparable<ManagerBase> {
      * @Since: 17:18 2025/8/9
      */
     protected void setOrder(int order) {
-        if (order != -1) {
+        if (this.order != DEF_ORDER) {
             return;
         }
         this.order = order;
