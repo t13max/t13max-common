@@ -47,6 +47,9 @@ public class TemplateReadListener implements ReadListener<LinkedHashMap<Integer,
     public void invoke(LinkedHashMap<Integer, String> rowMap, AnalysisContext context) {
         final String sheetName = context.readSheetHolder().getSheetName();
         final SheetData sheetData = excelData.getSheetDataMap().get(sheetName);
+        if (sheetName.startsWith(GenerateConfig.ignore)) {
+            return;
+        }
         if (sheetData == null) {
             Log.TEMPLATE.error("未找到Sheet, Sheet表内容生成失败, sheetName = {}", context.readSheetHolder().getSheetName());
             return;
