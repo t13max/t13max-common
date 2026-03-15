@@ -40,8 +40,8 @@ import static com.alipay.remoting.Configs.NETTY_BUFFER_LOW_WATERMARK;
  */
 public class RpcManager extends ManagerBase {
 
-    protected static final String PROTOCOL = "bolt";
-    protected static final String SERIALIZATION = "hessian2";
+    protected static final String PROTOCOL = "bolt";//RPC通信协议
+    protected static final String SERIALIZATION = "hessian2";//序列化协议
     // 随机分配rpc端口重试次数
     protected static final int MAX_GET_RPC_PORT_TRY_TIMES = 100;
 
@@ -105,7 +105,7 @@ public class RpcManager extends ManagerBase {
         // 需要关掉SofaRPC的shutdown钩子，不然在正常shutdown时rpc会不可用
         RpcConfigs.putValue(RpcOptions.JVM_SHUTDOWN_HOOK, false);
         // 序列化方式 支持 hessian2,json
-        RpcConfigs.putValue(RpcOptions.DEFAULT_SERIALIZATION, "hessian2");
+        RpcConfigs.putValue(RpcOptions.DEFAULT_SERIALIZATION, SERIALIZATION);
         // 开压缩
         RpcConfigs.putValue(RpcOptions.COMPRESS_OPEN, true);
         // 客户端在Linux开EPoll
@@ -136,6 +136,12 @@ public class RpcManager extends ManagerBase {
         }
     }
 
+    /**
+     * 根据Rpc接口获取对应的实现
+     *
+     * @Author: t13max
+     * @Since: 15:01 2026/3/15
+     */
     public <T> T get(Class<T> remoteInterface) {
         Object instance = serviceMap.get(remoteInterface);
         if (instance == null) {
@@ -153,9 +159,7 @@ public class RpcManager extends ManagerBase {
                     }
 
                     if (rpcConfig.isFailsafe()) {
-                        instance = Proxy
-                                .newProxyInstance(remoteInterface.getClassLoader(), new Class[]{remoteInterface},
-                                        new RPCInterfaceProxyHandler(remoteInterface, instance));
+                        instance = Proxy.newProxyInstance(remoteInterface.getClassLoader(), new Class[]{remoteInterface}, new RPCInterfaceProxyHandler(remoteInterface, instance));
                     }
                     serviceMap.put(remoteInterface, instance);
                 }
@@ -181,6 +185,12 @@ public class RpcManager extends ManagerBase {
         return status;
     }
 
+    /**
+     * 构建Rpc服务代理对象
+     *
+     * @Author: t13max
+     * @Since: 15:02 2026/3/15
+     */
     private <T> T buildService(Class<T> clazz) {
         RpcConfig rpcConfig = Application.config().getRpc();
         ConsumerConfig<?> consumerConfig = new ConsumerConfig<>()
@@ -245,11 +255,17 @@ public class RpcManager extends ManagerBase {
         }
     }
 
+    /**
+     * Rpc接口代理处理器, 用于熔断和降级
+     *
+     * @Author: t13max
+     * @Since: 15:11 2026/3/15
+     */
     private class RPCInterfaceProxyHandler<T> implements InvocationHandler {
 
-        private Class rpcInterface;
-        private Object realObject;
-        private String toString;
+        private final Class<T> rpcInterface;
+        private final Object realObject;
+        private final String toString;
 
         // 只根据rpc接口实例化的对象,用来获得default接口返回值, 用作熔断时返回给业务
         private T fallbacker;
@@ -266,7 +282,7 @@ public class RpcManager extends ManagerBase {
                 if (rpcConfig.isFailsafe()) {
                     fallbacker = instanceInterface(rpcInterface);
                     RpcInterface theInterface = rpcInterface.getAnnotation(RpcInterface.class);
-                    CircuitBreaker breaker = new CircuitBreaker()
+                    CircuitBreaker breaker = new CircuitBreaker<>()
                             .withFailureThreshold(theInterface.failureThresholdFailures(),
                                     theInterface.failureThresholdExecutions())
                             .withSuccessThreshold(theInterface.successThresholdSuccess(),
